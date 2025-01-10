@@ -56,6 +56,6 @@
 		}
 	},
 	"resources": {
-		"sprites": ["ressources/unlisted-icon.png", "ressources/friend-only-icon.png"]
+		"sprites": ["resources/unlisted-icon.png", "resources/friend-only-icon.png"]
 	}
 }
