@@ -8,8 +8,3 @@ You can read the [readme.md](https://insertlinkhere.please) to find more informa
 
 Thank to [zidnes](https://x.com/xviaexclusive) for making the eye icon !
 *(also thank to robtop for making the friend icon)*
-
-## TODO
-
-- Use `m_tempQueuedLevelList`
-- Use `CCArray`s when possible instead of `std::vector`s.

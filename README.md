@@ -36,3 +36,8 @@ When the level is in queue a clock icon will show up (it's disabled by default i
 
 I tried making a lot of comments to make my code understandable. I'm not the best at c++ so sorry for that in advance.
 If you have any issue understanding what I did, be sure to dm on discord (linked on my github socials) or make an issue.
+
+## TODO
+
+- Use `m_tempQueuedLevelList`
+- Use `CCArray`s when possible instead of `std::vector`s.
