@@ -1,0 +1,39 @@
+#pragma once
+
+#include <Geode/Geode.hpp>
+
+using namespace geode::prelude;
+
+class LevelInfos {
+public:
+	LevelInfos();
+
+	// unlisted levels
+	static auto getUnlistedLevels();
+
+	static bool isUnlisted(GJGameLevel* level);
+
+	static void addUnlistedLevel(GJGameLevel* level);
+
+	// friend only levels
+	static auto getFriendOnlyLevels();
+
+	static bool isFriendOnly(GJGameLevel* level);
+
+	static void addFriendOnlyLevel(GJGameLevel* level);
+
+	// add the  unlisted / friend only  levels
+	static void saveLevelInfos(GJGameLevel* level);
+
+	static void saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly);
+	static void saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly, LevelCell* levelCell);
+
+	static void saveInfosOfLevelsInArray(CCArray* levels);
+	// queued levels
+
+	static auto getAlreadyQueuedLevels();
+
+	static bool wasAlreadyQueued(GJGameLevel* level);
+
+	static void addQueuedLevel(GJGameLevel* level);
+};

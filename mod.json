@@ -1,0 +1,61 @@
+{
+	"geode": "4.1.1",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "geming400.showunlistedlevelsinlevelcells",
+	"name": "Show unlisted levels in level cells",
+	"version": "v1.0.0",
+	"developer": "Geming400",
+	"description": "Will show if the level is unlisted",
+	"tags": ["online", "offline"],
+	"settings": {
+		"display-title": {
+			"type": "title",
+			"name": "Display"
+		},
+		"show-clock-icon": {
+			"type": "bool",
+			"default": false,
+			"name": "Show clock icon",
+			"description": "When a level will be put in queue to check if it's unlisted or not, a clock will appear. This setting will decide if it will show or not.",
+			"enable-if": "queue-requests"
+		},
+		"show-unlisted-sprite": {
+			"type": "bool",
+			"default": true,
+			"name": "Show unlisted sprite"
+		},
+		"show-friend-only-sprite": {
+			"type": "bool",
+			"default": true,
+			"name": "Show friend only sprite"
+		},
+		"requests-title": {
+			"type": "title",
+			"name": "Requests"
+		},
+		"queue-requests": {
+			"type": "bool",
+			"default": true,
+			"name": "Queue requests",
+			"description": "This will queue the requests for finding if a level is unlisted or not. If disabled, the mod won't try to search for unlisted levels."
+		},
+		"queue-requests-timing": {
+			"type": "int",
+			"default": 2,
+			"min": 1,
+			"max": 10,
+			"name": "Queue requests timing",
+			"description": "This is the time to wait between each requests to find out if the level is unlisted or not.",
+			"enable-if": "queue-requests",
+			"requires-restart": true
+		}
+	},
+	"resources": {
+		"sprites": ["ressources/unlisted-icon.png", "ressources/friend-only-icon.png"]
+	}
+}
