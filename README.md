@@ -43,3 +43,4 @@ If you have any issue understanding what I did, be sure to dm on discord (linked
 - Use `CCArray`s when possible instead of `std::vector`s.
 - Make a mod icon
 - Maybe fix android build issues
+- Add a constructor to `LevelClass`
