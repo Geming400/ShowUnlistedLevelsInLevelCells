@@ -6,8 +6,6 @@ using namespace geode::prelude;
 
 class LevelInfos {
 public:
-	LevelInfos();
-
 	// unlisted levels
 	static auto getUnlistedLevels();
 
@@ -22,13 +20,6 @@ public:
 
 	static void addFriendOnlyLevel(GJGameLevel* level);
 
-	// add the  unlisted / friend only  levels
-	static void saveLevelInfos(GJGameLevel* level);
-
-	static void saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly);
-	static void saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly, LevelCell* levelCell);
-
-	static void saveInfosOfLevelsInArray(CCArray* levels);
 	// queued levels
 
 	static auto getAlreadyQueuedLevels();
@@ -36,4 +27,12 @@ public:
 	static bool wasAlreadyQueued(GJGameLevel* level);
 
 	static void addQueuedLevel(GJGameLevel* level);
+
+	// add the  unlisted / friend only  levels
+	static void saveLevelInfos(GJGameLevel* level);
+
+	static void saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly);
+	static void saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly, LevelCell* levelCell);
+
+	static void saveInfosOfLevelsInArray(CCArray* levels);
 };

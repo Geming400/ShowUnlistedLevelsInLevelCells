@@ -11,7 +11,15 @@ const std::string unlistedLevelsKey = "unlisted-levels";
 const std::string friendOnlyLevelsKey = "friend-only-levels";
 const std::string queuedLevelsKey = "queued-levels";
 
+void addLevelToQueue(GJGameLevel* level) {
+	if (level) {
+		LevelInfos::addQueuedLevel(level);
+	}
+}
+
 // unlisted levels
+
+
 auto LevelInfos::getUnlistedLevels() {
 	auto parsedUnlistedLevels = matjson::parse(Mod::get()->getSavedValue<std::string>(unlistedLevelsKey, EMPTY_ARRAY)); // get the unlisted levels from the saved key and turn it into a Geode::Result instance
 	matjson::Value unwrapedUnlistedLevels = parsedUnlistedLevels.unwrapOr(EMPTY_ARRAY); // get the unlisted levels but in a matjson array
@@ -36,7 +44,7 @@ bool LevelInfos::isUnlisted(GJGameLevel* level) {
 }
 
 void LevelInfos::addUnlistedLevel(GJGameLevel* level) {
-	LevelInfos::addQueuedLevel(level);
+	addLevelToQueue(level);
 
 	// if the level is already unlisted, don't add it to the unlisted level array
 	if (isUnlisted(level)) {
@@ -46,14 +54,17 @@ void LevelInfos::addUnlistedLevel(GJGameLevel* level) {
 
 	int levelID = level->m_levelID.value();
 
-	matjson::Value unlistedLevels = LevelInfos::getUnlistedLevels();
-	unlistedLevels.push(levelID);
-
 	log::debug("Refreshing the '{}' level array", unlistedLevelsKey);
+
+	auto unlistedLevels = getUnlistedLevels();
+	unlistedLevels.push(levelID);
 	Mod::get()->setSavedValue<std::string>(unlistedLevelsKey, unlistedLevels.dump());
 }
 
+
 // friend only levels
+
+
 auto LevelInfos::getFriendOnlyLevels() {
 	auto parsedFriendOnlyLevels = matjson::parse(Mod::get()->getSavedValue<std::string>(friendOnlyLevelsKey, EMPTY_ARRAY)); // get the friend only from the saved key and turn it into a Geode::Result instance
 	auto unwrapedFriendOnlydLevels = parsedFriendOnlyLevels.unwrapOr(EMPTY_ARRAY); // get the friend only levels but in a matjson array
@@ -78,7 +89,7 @@ bool LevelInfos::isFriendOnly(GJGameLevel* level) {
 }
 
 void LevelInfos::addFriendOnlyLevel(GJGameLevel* level) {
-	LevelInfos::addQueuedLevel(level);
+	addLevelToQueue(level);
 	
 	// if the level is already unlisted, don't add it to the unlisted level array
 	if (LevelInfos::isFriendOnly(level)) {
@@ -86,14 +97,59 @@ void LevelInfos::addFriendOnlyLevel(GJGameLevel* level) {
 		return;
 	}
 
+	log::debug("Refreshing the '{}' level array", friendOnlyLevelsKey);
+
 	matjson::Value friendOnlyLevels = getFriendOnlyLevels();
 	friendOnlyLevels.push(level->m_levelID.value());
-
-	log::debug("Refreshing the '{}' level array", friendOnlyLevelsKey);
 	Mod::get()->setSavedValue<std::string>(friendOnlyLevelsKey, friendOnlyLevels.dump());
 }
 
+
+// queued levels
+
+
+auto LevelInfos::getAlreadyQueuedLevels() {
+	auto parsedQueuedLevels = matjson::parse(Mod::get()->getSavedValue<std::string>(queuedLevelsKey, EMPTY_ARRAY)); // get the queued levels from the saved key and turn it into a Geode::Result instance
+	matjson::Value unwrapedQueuedLevels = parsedQueuedLevels.unwrapOr(EMPTY_ARRAY); // get the queued levels but in a matjson array
+	log::info("unwrapedQueuedLevels.size() = {}", unwrapedQueuedLevels.size());
+	return unwrapedQueuedLevels;
+}
+
+bool LevelInfos::wasAlreadyQueued(GJGameLevel* level) {
+	int levelID = level->m_levelID.value();
+
+	matjson::Value queuedLevels = getAlreadyQueuedLevels();
+
+	for (size_t i = 0; i < queuedLevels.size(); i++) // iterate trought each queued only levels
+	{
+		int queuedLevelID = queuedLevels.get<int>(i).unwrapOr(DEFAULT_NO_LEVEL_ID); // get the level id
+
+		if (levelID == queuedLevelID) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void LevelInfos::addQueuedLevel(GJGameLevel* level) {
+	// if the level is already queued, don't add it to the queued level array
+	if (LevelInfos::wasAlreadyQueued(level)) {
+		log::info("level {} is already in the '{}' array", level->m_levelName, queuedLevelsKey);
+		return;
+	}
+
+	log::debug("Refreshing the '{}' level array", queuedLevelsKey);
+
+	auto queuedLevels = getAlreadyQueuedLevels();
+	Mod::get()->setSavedValue<std::string>(queuedLevelsKey, queuedLevels.dump());
+	queuedLevels.push(level->m_levelID.value());
+}
+
+
 // add the  unlisted / friend only  levels
+
+
 void LevelInfos::saveLevelInfos(GJGameLevel* level) {
 	if (level->m_unlisted) {
 		log::debug("Level is unlisted");
@@ -146,44 +202,4 @@ void LevelInfos::saveInfosOfLevelsInArray(CCArray* levels) { // fun fact: this c
 
         saveLevelInfos(level);
     }
-}
-
-// queued levels
-
-auto LevelInfos::getAlreadyQueuedLevels() {
-	auto parsedQueuedLevels = matjson::parse(Mod::get()->getSavedValue<std::string>(queuedLevelsKey, EMPTY_ARRAY)); // get the queued levels from the saved key and turn it into a Geode::Result instance
-	matjson::Value unwrapedQueuedLevels = parsedQueuedLevels.unwrapOr(EMPTY_ARRAY); // get the queued levels but in a matjson array
-	log::info("unwrapedQueuedLevels.size() = {}", unwrapedQueuedLevels.size());
-	return unwrapedQueuedLevels;
-}
-
-bool LevelInfos::wasAlreadyQueued(GJGameLevel* level) {
-	int levelID = level->m_levelID.value();
-
-	matjson::Value queuedLevels = getAlreadyQueuedLevels();
-
-	for (size_t i = 0; i < queuedLevels.size(); i++) // iterate trought each queued only levels
-	{
-		int queuedLevelID = queuedLevels.get<int>(i).unwrapOr(DEFAULT_NO_LEVEL_ID); // get the level id
-
-		if (levelID == queuedLevelID) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void LevelInfos::addQueuedLevel(GJGameLevel* level) {
-	// if the level is already queued, don't add it to the queued level array
-	if (LevelInfos::wasAlreadyQueued(level)) {
-		log::info("level {} is already in the '{}' array", level->m_levelName, queuedLevelsKey);
-		return;
-	}
-
-	matjson::Value queuedLevels = getAlreadyQueuedLevels();
-	queuedLevels.push(level->m_levelID.value());
-
-	log::debug("Refreshing the '{}' level array -> size = {}", queuedLevelsKey, queuedLevels.size());
-	Mod::get()->setSavedValue<std::string>(queuedLevelsKey, queuedLevels.dump());
 }
