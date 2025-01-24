@@ -11,16 +11,29 @@
 
 using namespace geode::prelude;
 
-CCPoint firstPos = {340, 10}; // the first pos, aka it's on the left side
-CCPoint secondPos = {325, 10}; // the second pos, aka it's on the left side but a little bit less
+const CCPoint firstPos = {340, 10}; // the first pos, aka it's on the left side
+const CCPoint secondPos = {325, 10}; // the second pos, aka it's on the left side but a little bit less
 
 QueueRequests queueRequests;
 
-// if the level was already queued
-// AND
-// if the level is currently in the queue
+const std::vector<SearchType> allowedTypes = {
+	SearchType::Downloaded,
+	SearchType::FavouriteLevels,
+	SearchType::MyLevels,
+	// SearchType::Reported, // wth is this
+	SearchType::SavedLevels,
+	SearchType::Search
+};
+
+/* 
+if the level was already queued
+AND
+if the level is currently in the queue
+AND
+if the level is currently in the temp queue
+*/
 bool wasQueued(GJGameLevel* level) {
-	return (LevelInfos::wasAlreadyQueued(level) && queueRequests.isQueued(level));
+	return (LevelInfos::wasAlreadyQueued(level) && queueRequests.isQueued(level) && queueRequests.isQueuedInTempQueue(level));
 }
 
 class $modify(MyEditLevelLayer, EditLevelLayer) {
@@ -46,14 +59,6 @@ class $modify(MyLevelCell, LevelCell) {
 	struct Fields {
 		bool m_isUnlisted;
 		bool m_isFriendOnly;
-		std::vector<SearchType> m_allowedTypes = {
-			SearchType::Downloaded,
-			SearchType::FavouriteLevels,
-			SearchType::MyLevels,
-			// SearchType::Reported, // wth is this
-			SearchType::SavedLevels,
-			SearchType::Search
-		};
 
 		CCSprite* m_unlistedSprite;
 		CCSprite* m_friendOnlySprite;
@@ -61,14 +66,14 @@ class $modify(MyLevelCell, LevelCell) {
 	};
 
 	bool isSearchTypeAllowed(SearchType searchType) {
-		auto allowedTypes = m_fields->m_allowedTypes;
-
 		for (size_t i = 0; i < allowedTypes.size(); i++)
 		{
 			if (searchType == allowedTypes.at(i)) {
+				log::info("Search type {} is allowed", static_cast<int>(searchType));
 				return true;
 			}
 		}
+		log::info("Search type {} is NOT allowed", static_cast<int>(searchType));
 		return false;
 	}
 
@@ -76,27 +81,54 @@ class $modify(MyLevelCell, LevelCell) {
 	This will get the search type from a GJSearchObject from the fifth parent (yes I could have hooked LevelBrowserLayer but whatever)
 	*/
 	bool isSearchTypeAllowed() {
-		auto allowedTypes = m_fields->m_allowedTypes;
+		return true;
+		if (typeinfo_cast<DailyLevelNode*>(this->getParent())) {
+			log::info("Search type for daily levels is not allowed");
+			return false; // the user is on the  daily / weekly / event  level thingy
+		} else {
+			log::info("typeinfo_cast<DailyLevelNode*>(this->getParent()) = nullptr");
+			if (this->getParent()) {
+				log::debug("this->getParent() = True");
+			} else {
+				log::debug("this->getParent() = False");
+			}
+			log::debug("this->getID() = {}", this->getParent()->getID());
+		}
+		return false;
+		log::debug("hello 0.1");
 		LevelBrowserLayer* levelBrowserLayer = typeinfo_cast<LevelBrowserLayer*>(this->getParent()
 		->getParent()
 		->getParent()
 		->getParent()
 		->getParent());
-
-		GJSearchObject* searchObject = levelBrowserLayer->m_searchObject;
-		SearchType searchType = searchObject->m_searchType;
-
-		for (size_t i = 0; i < allowedTypes.size(); i++)
-		{
-			if (searchType == allowedTypes.at(i)) {
-				return true;
+		log::debug("hello 0.2");
+		
+		if (levelBrowserLayer) {
+			log::debug("hello 1");
+			GJSearchObject* searchObject = levelBrowserLayer->m_searchObject;
+			SearchType searchType = searchObject->m_searchType;
+			log::debug("hello 1.5");
+			for (size_t i = 0; i < allowedTypes.size(); i++)
+			{
+				log::debug("hello 2");
+				if (searchType == allowedTypes.at(i)) {
+					log::info("Search type {} is allowed", static_cast<int>(searchType));
+					return true;
+				}
 			}
+			log::info("Search type {} is NOT allowed or is not in 'allowedTypes'", static_cast<int>(searchType));
+		} else {
+			log::info("not if (levelBrowserLayer)");
 		}
 		return false;
 	}
 
+
     void loadCustomLevelCell() {
         LevelCell::loadCustomLevelCell();
+		if (!isSearchTypeAllowed()) {
+			return;
+		}
 
 		m_fields->m_isUnlisted = LevelInfos::isUnlisted(m_level);
 		m_fields->m_isFriendOnly = LevelInfos::isFriendOnly(m_level);
@@ -160,6 +192,7 @@ class $modify(MyLevelCell, LevelCell) {
 		// Adding the level in queue or something
 
 		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly) && !wasQueued(m_level)) {
+			log::debug("Adding {} to queue from main.cpp", m_level->m_levelName);
 			LevelClass levelClass;
 			levelClass.level = m_level;
 			levelClass.levelCell = this;
