@@ -11,8 +11,16 @@ class QueueRequests {
 public:
     void addLevelToQueue(LevelClass levelClass);
     void addLevelToTempQueue(LevelClass levelClass);
-    bool isQueued(LevelClass levelClass, bool isFromTempQueue);
+
+    void removeLevelFromQueue(LevelClass levelClass);
+    void removeLevelFromTempQueue(LevelClass levelClass);
+
+    bool isQueuedInTempQueue(GJGameLevel* level);
+    bool isQueuedInTempQueue(LevelClass levelClass);
+
     bool isQueued(GJGameLevel* level);
+    bool isQueued(LevelClass levelClass);
+
     void startLoop();
 private:
     bool isQueuedLevelsSuperiorToN(int n, bool isEqual);
@@ -20,6 +28,6 @@ private:
 
     std::vector<LevelClass> m_queuedLevelList;
     std::vector<LevelClass> m_tempQueuedLevelList;
-    TaskScheduler m_scheduler;
+    TaskScheduler m_scheduler = TaskScheduler(1); // 1 thread
     int m_loopTaskID;
 };
