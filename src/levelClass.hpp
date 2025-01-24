@@ -10,4 +10,6 @@ public:
     GJGameLevel* level;
     LevelCell* levelCell;
     CCSprite* clockSprite;
+
+    bool operator==(const LevelClass& givenClass) const;
 };

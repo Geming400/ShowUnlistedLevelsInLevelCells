@@ -17,6 +17,7 @@ add_library(${PROJECT_NAME} SHARED
     src/queueRequests.cpp
 
     src/levelClass.hpp
+    src/levelClass.cpp
 
     src/gdLevelSearch.hpp
     src/gdLevelSearch.cpp
