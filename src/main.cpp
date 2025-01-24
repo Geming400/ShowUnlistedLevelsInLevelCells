@@ -1,4 +1,4 @@
-#include "LevelInfos.hpp"
+#include "levelInfos.hpp"
 #include "queueRequests.hpp"
 #include "levelClass.hpp"
 
