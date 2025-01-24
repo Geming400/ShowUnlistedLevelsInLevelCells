@@ -6,5 +6,5 @@ using namespace geode::prelude;
 
 class Fades {
 public:
-    static inline auto clockFadeOut = CCFadeOut::create(1.5);
+    static inline float clockFadeOutTime = 0.5f;
 };
