@@ -1,7 +1,7 @@
 #pragma once
 
 #include "levelClass.hpp"
-#include "queueRequests.hpp "
+#include "queueRequests.hpp"
 
 #include <Geode/Geode.hpp>
 #include <Geode/utils/web.hpp>
