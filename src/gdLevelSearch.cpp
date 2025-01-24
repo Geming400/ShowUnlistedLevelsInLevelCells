@@ -1,6 +1,8 @@
 #include "gdLevelSearch.hpp"
 #include "levelInfos.hpp"
 #include "fadeValues.hpp"
+#include "levelClass.hpp"
+#include "queueRequests.hpp"
 
 #include <Geode/Geode.hpp>
 #include <Geode/utils/web.hpp>
@@ -33,21 +35,9 @@ void LMD::loadLevelsFinished(CCArray* p0, char const* p1) {
 }
 */
 
-LevelSearch::LevelSearch(LevelCell* levelCell, CCSprite* clockIcon) {
-    this->m_levelCell = levelCell;
-    this->m_clockIcon = clockIcon;
-}
-
-std::vector<std::string> split(std::string str, std::string delimiter) {
-    std::vector<std::string> tokens;
-    size_t pos {};
-
-    for (size_t fd = 0; (fd = str.find(delimiter, pos)) != std::string::npos; pos = fd + delimiter.size()) {
-        tokens.emplace_back(str.data() + pos, str.data() + fd);
-    }
-
-    tokens.emplace_back(str.data() + pos, str.data() + str.size());
-    return tokens;
+LevelSearch::LevelSearch(CCSprite* clockSprite, QueueRequests* queueRequestInstance) {
+    this->m_clockSprite = clockSprite;
+    this->m_queueRequestInstance = queueRequestInstance;
 }
 
 std::string removeAfterString(std::string rawResponseString, std::string removeAfter = "#") {
@@ -70,7 +60,7 @@ def sep(values: list) -> dict:
 ```
 */
 matjson::Value LevelSearch::rawLevelIntoArray(std::string rawResponseString) {
-    auto rawLevels = split(rawResponseString, "|");
+    auto rawLevels = utils::string::split(rawResponseString, "|");
 
     matjson::Value jsonObj;
 
@@ -91,7 +81,7 @@ std::vector<GJGameLevel*> LevelSearch::parseRawLevels(std::string rawLevels) {
     std::vector<GJGameLevel*> gameLevelsArray;
 
     levels = removeAfterString(rawLevels);
-    splittedLevels = split(levels, "|");
+    splittedLevels = utils::string::split(levels, "|");
 
     int numOfLevels = splittedLevels.size();
 
@@ -105,46 +95,58 @@ std::vector<GJGameLevel*> LevelSearch::parseRawLevels(std::string rawLevels) {
     return gameLevelsArray;
 }
 
-void LevelSearch::hideClockIcon() {
-    auto clockSprite = m_levelCell->getChildByID("clock-sprite"_spr);
-    auto fade = Fades::clockFadeOut;
+void LevelSearch::hideClockIcon(LevelClass levelClass) {
+    LevelInfos::addQueuedLevel(levelClass.level);
+
+    m_queueRequestInstance->removeLevelFromTempQueue(levelClass);
+    auto clockSprite = m_clockSprite;
+    auto fade = CCFadeOut::create(Fades::clockFadeOutTime);
     if (clockSprite) {
         clockSprite->runAction(fade);
     } else {
-        log::warn("Didn't found 'clockSprite'");
+        log::error("Didn't found 'clockSprite'");
     }
     //clockSprite->setVisible(false);
 }
 
-void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
+void LevelSearch::getGJLevels21(GJSearchObject* searchObject, LevelClass levelClass) {
     log::debug("LevelSearch::getGJLevels21()");
     web::WebRequest req = web::WebRequest();
     std::vector<GJGameLevel*> levels;
     GJGameLevel* level = GJGameLevel::create();
 
-    matjson::Value json = matjson::Value();
+    /*matjson::Value json = matjson::Value();
     json.set("secret", LevelSearch::COMMON_SECRET); // add the common secret
     json.set("type", static_cast<int>(searchObject->m_searchType));
     json.set("str", searchObject->m_searchQuery);
+    req.bodyJSON(json);*/
     // not including the GJP2 to be sure to not see unlisted + friends only levels
 
+    std::string body = std::format("secret={}&type={}&str={}",
+        LevelSearch::COMMON_SECRET,
+        static_cast<int>(searchObject->m_searchType),
+        searchObject->m_searchQuery);
+
+    req.bodyString(body);
     req.userAgent("");
-    req.bodyJSON(json);
+    
+    // log::warn("{}", json.dump());
+    log::warn("{}", body);
 
     req.timeout(std::chrono::seconds(5)); // set the timeout to 5 seconds
 
-    m_listener.bind([this] (web::WebTask::Event* e) {
+    m_listener.bind([this, levelClass] (web::WebTask::Event* e) {
             if (web::WebResponse* res = e->getValue()) {
-                if (!res->ok()) { // original: res->ok()   |   for debug reasons
+                if (res->ok()) { // original: res->ok()   |   for debug reasons
                     // do stuff
                     log::info("{}", res->string().unwrapOr("Uh oh!"));
                 } else {
-                    log::warn("Request code is not 2xx"); // = no internet (robtop's servers dosen't return an actual status code by themselves)
+                    log::error("Request code is not 2xx"); // = no internet (probably) (robtop's servers dosen't return an actual status code by themselves) or the request failed (somehow :broken_hearth:)
                 }
-                hideClockIcon();
+                hideClockIcon(levelClass);
             } else if (e->isCancelled()) {
                 log::error("The request was cancelled... So sad :(");
-                hideClockIcon();
+                hideClockIcon(levelClass);
             }
         });
 

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "levelClass.hpp"
+#include "queueRequests.hpp "
+
 #include <Geode/Geode.hpp>
 #include <Geode/utils/web.hpp>
 
@@ -17,12 +20,12 @@ public:
 
 class LevelSearch {
 public:
-    LevelSearch(LevelCell* levelCell, CCSprite* clockIcon);
-    void getGJLevels21(GJSearchObject* searchObject);
+    LevelSearch(CCSprite* clockSprite, QueueRequests* queueRequestInstance);
+    void getGJLevels21(GJSearchObject* searchObject, LevelClass levelClass);
 private:
     std::vector<GJGameLevel*> parseRawLevels(std::string rawLevels);
     matjson::Value rawLevelIntoArray(std::string rawResponseString);
-    void hideClockIcon();
+    void hideClockIcon(LevelClass levelClass);
 
     const std::string COMMON_SECRET = "Wmfd2893gb7";
     const std::string URL = "http://www.boomlings.com/database/getGJLevels21.php";
@@ -30,5 +33,6 @@ private:
     EventListener<web::WebTask> m_listener;
 
     LevelCell* m_levelCell;
-    CCSprite* m_clockIcon;
+    CCSprite* m_clockSprite;
+    QueueRequests* m_queueRequestInstance;
 };
