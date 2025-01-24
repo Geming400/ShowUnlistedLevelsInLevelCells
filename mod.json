@@ -10,7 +10,7 @@
 	"name": "Show unlisted levels in level cells",
 	"version": "v1.0.0",
 	"developer": "Geming400",
-	"description": "Will show if the level is unlisted",
+	"description": "Will show if a level is unlisted / friends only",
 	"tags": ["online", "offline"],
 	"settings": {
 		"display-title": {
