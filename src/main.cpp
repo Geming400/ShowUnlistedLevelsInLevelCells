@@ -1,6 +1,7 @@
 #include "LevelInfos.hpp"
 #include "queueRequests.hpp"
 #include "levelClass.hpp"
+#include "fadeValues.hpp"
 
 #include <Geode/Geode.hpp>
 #include <Geode/modify/LevelCell.hpp>
@@ -31,9 +32,11 @@ AND
 if the level is currently in the queue
 AND
 if the level is currently in the temp queue
+AND
+if the level is a daily / weekly / event  level
 */
 bool wasQueued(GJGameLevel* level) {
-	return (LevelInfos::wasAlreadyQueued(level) && queueRequests.isQueued(level) && queueRequests.isQueuedInTempQueue(level));
+	return (LevelInfos::wasAlreadyQueued(level) && queueRequests.isQueued(level) && queueRequests.isQueuedInTempQueue(level) && LevelInfos::isLevelDaily(level));
 }
 
 class $modify(MyEditLevelLayer, EditLevelLayer) {
@@ -78,29 +81,52 @@ class $modify(MyLevelCell, LevelCell) {
 	}
 
 	/*
+	gets the n-th parent of 'this', then typeinfo casts it into T
+
+	@param n the num of iterations to get the desired parent
+	*/
+	template<typename T>
+	T getRecursiveParent(int n) {
+		CCNode* parent = this->getParent();
+
+		if (parent && n <= 0) {
+			return typeinfo_cast<T>(parent);
+		} else if (parent && n > 0) {
+			return typeinfo_cast<T>(getRecursiveParent(n-1));
+		}
+		return nullptr;
+	}
+	/*gets the n-th parent of 'this', then returns a `CCNode` pointer*/
+	CCNode* getRecursiveParent(int n) {
+		CCNode* parent = this->getParent();
+
+		if (parent && n <= 0) {
+			return parent;
+		} else if (parent && n > 0) {
+			return getRecursiveParent(n-1);
+		}
+		return nullptr;
+	}
+
+	/*
 	This will get the search type from a GJSearchObject from the fifth parent (yes I could have hooked LevelBrowserLayer but whatever)
 	*/
 	bool isSearchTypeAllowed() {
-		return true;
-		if (typeinfo_cast<DailyLevelNode*>(this->getParent())) {
+		if (LevelInfos::isLevelDaily(m_level)) {
 			log::info("Search type for daily levels is not allowed");
-			return false; // the user is on the  daily / weekly / event  level thingy
-		} else {
-			log::info("typeinfo_cast<DailyLevelNode*>(this->getParent()) = nullptr");
-			if (this->getParent()) {
-				log::debug("this->getParent() = True");
-			} else {
-				log::debug("this->getParent() = False");
-			}
-			log::debug("this->getID() = {}", this->getParent()->getID());
+			return false;
 		}
-		return false;
-		log::debug("hello 0.1");
-		LevelBrowserLayer* levelBrowserLayer = typeinfo_cast<LevelBrowserLayer*>(this->getParent()
-		->getParent()
-		->getParent()
-		->getParent()
-		->getParent());
+		return true;
+		
+		/*log::debug("hello 0.1");
+		//LevelBrowserLayer* levelBrowserLayer = typeinfo_cast<LevelBrowserLayer*>(this->getParent()
+		//->getParent()
+		//->getParent()
+		//->getParent()
+		//->getParent());
+
+		LevelBrowserLayer* levelBrowserLayer = getRecursiveParent<LevelBrowserLayer*>(5); // get the fifth parent
+
 		log::debug("hello 0.2");
 		
 		if (levelBrowserLayer) {
@@ -120,12 +146,13 @@ class $modify(MyLevelCell, LevelCell) {
 		} else {
 			log::info("not if (levelBrowserLayer)");
 		}
-		return false;
+		return false;*/
 	}
 
 
     void loadCustomLevelCell() {
         LevelCell::loadCustomLevelCell();
+
 		if (!isSearchTypeAllowed()) {
 			return;
 		}
@@ -142,7 +169,7 @@ class $modify(MyLevelCell, LevelCell) {
 		m_fields->m_unlistedSprite->setID("unlisted-sprite"_spr);
 		m_fields->m_unlistedSprite->setPosition(firstPos);
 		m_fields->m_unlistedSprite->setScale(0.5f);
-		m_fields->m_unlistedSprite->setOpacity(128);
+		m_fields->m_unlistedSprite->setOpacity(FadeTo::iconsFadeTo);
 		m_fields->m_unlistedSprite->setVisible(false);
 
 		addChild(m_fields->m_unlistedSprite);
@@ -167,7 +194,7 @@ class $modify(MyLevelCell, LevelCell) {
 			m_fields->m_friendOnlySprite->setPosition(firstPos);
 		}
 		m_fields->m_friendOnlySprite->setScale(0.5f);
-		m_fields->m_friendOnlySprite->setOpacity(128);
+		m_fields->m_friendOnlySprite->setOpacity(FadeTo::iconsFadeTo);
 		m_fields->m_friendOnlySprite->setVisible(false);
 
 		addChild(m_fields->m_friendOnlySprite);
@@ -184,7 +211,7 @@ class $modify(MyLevelCell, LevelCell) {
 		m_fields->m_clockSprite->setID("clock-sprite"_spr);
 		m_fields->m_clockSprite->setPosition(firstPos);
 		m_fields->m_clockSprite->setScale(0.5f);
-		m_fields->m_clockSprite->setOpacity(128);
+		m_fields->m_clockSprite->setOpacity(FadeTo::iconsFadeTo);
 		m_fields->m_clockSprite->setVisible(false);
 
 		addChild(m_fields->m_clockSprite);
@@ -242,9 +269,10 @@ class $modify(MyMenuLayer, MenuLayer) {
 
 			if (level->m_unlisted || level->m_friendsOnly) { // if the level is either unlisted or friend only
 				log::debug("Level {} will have it's info saved", level->m_levelName);
+				LevelInfos::saveLevelInfos(level); // save it's info the (unlisted || friendsOnly) is already in LevelInfos::saveLevelInfos()
 			}
-
-			LevelInfos::saveLevelInfos(level); // save it's info the (unlisted || friendsOnly) is already in LevelInfos::saveLevelInfos()
+			
+			LevelInfos::addQueuedLevel(level); // prevent the level from being queued
 		}
 
 		localLevelsHasBeenChecked(); // make it so that this will not happen again
