@@ -1,7 +1,7 @@
 #include "LevelInfos.hpp"
 #include "queueRequests.hpp"
 #include "levelClass.hpp"
-#include "fadeValues.hpp"
+#include "utils.hpp"
 
 #include <Geode/Geode.hpp>
 #include <Geode/modify/LevelCell.hpp>
@@ -166,10 +166,10 @@ class $modify(MyLevelCell, LevelCell) {
 
 		m_fields->m_unlistedSprite = CCSprite::create("unlisted-icon.png"_spr);
 
-		m_fields->m_unlistedSprite->setID("unlisted-sprite"_spr);
+		m_fields->m_unlistedSprite->setID(Ids::UNLISTED_SPRITE_ID);
 		m_fields->m_unlistedSprite->setPosition(firstPos);
 		m_fields->m_unlistedSprite->setScale(0.5f);
-		m_fields->m_unlistedSprite->setOpacity(FadeTo::iconsFadeTo);
+		m_fields->m_unlistedSprite->setOpacity(Fades::FadeTo::iconsFadeTo);
 		m_fields->m_unlistedSprite->setVisible(false);
 
 		addChild(m_fields->m_unlistedSprite);
@@ -187,16 +187,17 @@ class $modify(MyLevelCell, LevelCell) {
 
 		m_fields->m_friendOnlySprite = CCSprite::create("friend-only-icon.png"_spr);
 
-		m_fields->m_friendOnlySprite->setID("friend-only-sprite"_spr);
+		m_fields->m_friendOnlySprite->setID(Ids::FRIEND_ONLY_SPRITE_ID);
 		if (Mod::get()->getSettingValue<bool>("show-unlisted-sprite")) {
 			m_fields->m_friendOnlySprite->setPosition(secondPos);
 		} else {
 			m_fields->m_friendOnlySprite->setPosition(firstPos);
 		}
 		m_fields->m_friendOnlySprite->setScale(0.5f);
-		m_fields->m_friendOnlySprite->setOpacity(FadeTo::iconsFadeTo);
+		m_fields->m_friendOnlySprite->setOpacity(Fades::FadeTo::iconsFadeTo);
 		m_fields->m_friendOnlySprite->setVisible(false);
-
+		
+		
 		addChild(m_fields->m_friendOnlySprite);
 
 		if (m_level->m_friendsOnly || m_fields->m_isFriendOnly) {
@@ -208,11 +209,12 @@ class $modify(MyLevelCell, LevelCell) {
 
 		m_fields->m_clockSprite = CCSprite::createWithSpriteFrameName("GJ_timeIcon_001.png");
 
-		m_fields->m_clockSprite->setID("clock-sprite"_spr);
+		m_fields->m_clockSprite->setID(Ids::CLOCK_SPRITE_ID);
 		m_fields->m_clockSprite->setPosition(firstPos);
 		m_fields->m_clockSprite->setScale(0.5f);
-		m_fields->m_clockSprite->setOpacity(FadeTo::iconsFadeTo);
+		m_fields->m_clockSprite->setOpacity(Fades::FadeTo::iconsFadeTo);
 		m_fields->m_clockSprite->setVisible(false);
+		
 
 		addChild(m_fields->m_clockSprite);
 
@@ -221,9 +223,7 @@ class $modify(MyLevelCell, LevelCell) {
 		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly) && !wasQueued(m_level)) {
 			log::debug("Adding {} to queue from main.cpp", m_level->m_levelName);
 			LevelClass levelClass;
-			levelClass.level = m_level;
 			levelClass.levelCell = this;
-			levelClass.clockSprite = m_fields->m_clockSprite;
 			queueRequests.addLevelToQueue(levelClass);
 		}
 
