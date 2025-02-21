@@ -52,7 +52,10 @@
 			"name": "Queue requests timing",
 			"description": "This is the time to wait between each requests to find out if the level is unlisted or not.",
 			"enable-if": "queue-requests",
-			"requires-restart": true
+			"requires-restart": true,
+			"control": {
+				"slider": true
+			}
 		}
 	},
 	"resources": {
