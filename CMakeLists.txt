@@ -22,7 +22,7 @@ add_library(${PROJECT_NAME} SHARED
     src/gdLevelSearch.hpp
     src/gdLevelSearch.cpp
 
-    src/fadeValues.hpp
+    src/utils.hpp
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})
