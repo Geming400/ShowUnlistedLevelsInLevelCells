@@ -1,5 +1,7 @@
 #pragma once
 
+#include "levelClass.hpp"
+
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
@@ -32,7 +34,11 @@ public:
 	static void saveLevelInfos(GJGameLevel* level);
 
 	static void saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly);
-	static void saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly, LevelCell* levelCell);
+	static void saveCustomLevelInfos(LevelClass levelClass, bool isUnlisted, bool isFriendOnly);
 
 	static void saveInfosOfLevelsInArray(CCArray* levels);
+
+	// other stuff
+
+	static bool isLevelDaily(GJGameLevel* level);
 };

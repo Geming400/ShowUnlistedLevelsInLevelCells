@@ -1,4 +1,6 @@
 #include "levelInfos.hpp"
+#include "utils.hpp"
+#include "levelClass.hpp"
 
 #include <Geode/Geode.hpp>
 
@@ -58,6 +60,7 @@ void LevelInfos::addUnlistedLevel(GJGameLevel* level) {
 
 	auto unlistedLevels = getUnlistedLevels();
 	unlistedLevels.push(levelID);
+
 	Mod::get()->setSavedValue<std::string>(unlistedLevelsKey, unlistedLevels.dump());
 }
 
@@ -101,6 +104,7 @@ void LevelInfos::addFriendOnlyLevel(GJGameLevel* level) {
 
 	matjson::Value friendOnlyLevels = getFriendOnlyLevels();
 	friendOnlyLevels.push(level->m_levelID.value());
+
 	Mod::get()->setSavedValue<std::string>(friendOnlyLevelsKey, friendOnlyLevels.dump());
 }
 
@@ -142,8 +146,9 @@ void LevelInfos::addQueuedLevel(GJGameLevel* level) {
 	log::debug("Refreshing the '{}' level array", queuedLevelsKey);
 
 	auto queuedLevels = getAlreadyQueuedLevels();
-	Mod::get()->setSavedValue<std::string>(queuedLevelsKey, queuedLevels.dump());
 	queuedLevels.push(level->m_levelID.value());
+
+	Mod::get()->setSavedValue<std::string>(queuedLevelsKey, queuedLevels.dump());
 }
 
 
@@ -151,6 +156,8 @@ void LevelInfos::addQueuedLevel(GJGameLevel* level) {
 
 
 void LevelInfos::saveLevelInfos(GJGameLevel* level) {
+	LevelInfos::addQueuedLevel(level);
+
 	if (level->m_unlisted) {
 		log::debug("Level is unlisted");
 		addUnlistedLevel(level);
@@ -164,9 +171,10 @@ void LevelInfos::saveLevelInfos(GJGameLevel* level) {
 
 /*
 This function is like saveLevelInfos except it won't see the content of level->m_unlisted and level->m_friendsOnly
-It's the user who defines if the level is unlisted or friend only
+It's the mod that defines if the level is unlisted or friend only
 */
 void LevelInfos::saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly) {
+	log::info("saveCustomLevelInfos");
 	if (isUnlisted) {
 		addUnlistedLevel(level);
 	}
@@ -178,21 +186,31 @@ void LevelInfos::saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool 
 
 /*
 This function is like saveLevelInfos except it won't see the content of level->m_unlisted and level->m_friendsOnly
-It's the user who defines if the level is unlisted or friend only
+It's the mod that defines if the level is unlisted or friend only
 */
-void LevelInfos::saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly, LevelCell* levelCell) {
+void LevelInfos::saveCustomLevelInfos(LevelClass levelClass, bool isUnlisted, bool isFriendOnly) {
 	log::debug("LevelInfos::saveCustomLevelInfos()");
 	if (isUnlisted) {
-		levelCell->getChildByID("unlisted-sprite"_spr)->setVisible(true);
-		addUnlistedLevel(level);
+		CCFadeTo* iconFades = CCFadeTo::create(Fades::Fades::iconsFadeInTime, Fades::FadeTo::iconsFadeTo);
+		if (auto LevelCell = levelClass.levelCell.lock()) {
+			CCNode* unlistedSprite = LevelCell->getChildByID("unlisted-sprite"_spr);
+			unlistedSprite->runAction(iconFades);
+			unlistedSprite->setVisible(true);
+		}
+
+		addUnlistedLevel(levelClass.getLevel());
 	}
 
 	if (isFriendOnly) {
-		levelCell->getChildByID("friend-only-sprite"_spr)->setVisible(true);
-		addFriendOnlyLevel(level);
-	}
+		CCFadeTo* FadeTo = CCFadeTo::create(Fades::Fades::iconsFadeInTime, Fades::FadeTo::iconsFadeTo);
+		if (auto levelCell = levelClass.levelCell.lock()) {
+			CCNode* friendOnlySprite = levelCell->getChildByID("friend-only-sprite"_spr);
 
-	levelCell->getChildByID("clock-sprite"_spr)->setVisible(false);
+			friendOnlySprite->runAction(FadeTo);
+			friendOnlySprite->setVisible(true);
+		}
+		addFriendOnlyLevel(levelClass.getLevel());
+	}
 }
 
 void LevelInfos::saveInfosOfLevelsInArray(CCArray* levels) { // fun fact: this comment was written 12 min before new year (2025) in GMT+01&
@@ -202,4 +220,12 @@ void LevelInfos::saveInfosOfLevelsInArray(CCArray* levels) { // fun fact: this c
 
         saveLevelInfos(level);
     }
+}
+
+
+// other stuff
+
+
+bool LevelInfos::isLevelDaily(GJGameLevel* level) {
+	return (level->m_dailyID.value() != 0);
 }
