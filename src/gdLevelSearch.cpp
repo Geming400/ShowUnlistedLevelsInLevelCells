@@ -1,6 +1,6 @@
 #include "gdLevelSearch.hpp"
 #include "levelInfos.hpp"
-#include "fadeValues.hpp"
+#include "utils.hpp"
 #include "levelClass.hpp"
 #include "queueRequests.hpp"
 
@@ -35,82 +35,28 @@ void LMD::loadLevelsFinished(CCArray* p0, char const* p1) {
 }
 */
 
-LevelSearch::LevelSearch(CCSprite* clockSprite, QueueRequests* queueRequestInstance) {
-    this->m_clockSprite = clockSprite;
-    this->m_queueRequestInstance = queueRequestInstance;
-}
-
-std::string removeAfterString(std::string rawResponseString, std::string removeAfter = "#") {
-    std::string newRawResponseString = rawResponseString;
-
-    newRawResponseString = newRawResponseString.substr(0, newRawResponseString.find(removeAfter)); // remove everything after the removeAfter
-
-    return newRawResponseString;
-}
-
-/*
-Similar to:
-
-```py
-def sep(values: list) -> dict:
-    to_return = {}
-    for i in range(0, int(len(values) / 2)):
-        to_return[i] = values[i + 1]
-    return to_return
-```
-*/
-matjson::Value LevelSearch::rawLevelIntoArray(std::string rawResponseString) {
-    auto rawLevels = utils::string::split(rawResponseString, "|");
-
-    matjson::Value jsonObj;
-
-    for (size_t i = 0; i < static_cast<size_t>(rawLevels.size() / 2); i++)
-    {
-        std::string key = rawLevels.at(i);
-        std::string value = rawLevels.at(i + 1);
-        jsonObj.set(key, value);
-    }
-    
-    return jsonObj;
-}
-
-std::vector<GJGameLevel*> LevelSearch::parseRawLevels(std::string rawLevels) {
-    std::string levels = rawLevels;
-    std::vector<std::string> splittedLevels;
-    std::vector<matjson::Value> levelArray;
-    std::vector<GJGameLevel*> gameLevelsArray;
-
-    levels = removeAfterString(rawLevels);
-    splittedLevels = utils::string::split(levels, "|");
-
-    int numOfLevels = splittedLevels.size();
-
-    for (size_t i = 0; i < numOfLevels; i++)
-    {
-        std::string level = splittedLevels.at(i);
-        log::info("level = {}", level);
-        levelArray.push_back(rawLevelIntoArray(level));
-    }
-    
-    return gameLevelsArray;
+LevelSearch::LevelSearch(LevelClass levelClass, QueueRequests* queueRequest) {
+    m_levelClass = levelClass;
+    m_queueRequestInstance = queueRequest;
 }
 
 void LevelSearch::hideClockIcon(LevelClass levelClass) {
-    LevelInfos::addQueuedLevel(levelClass.level);
+    LevelInfos::addQueuedLevel(levelClass.levelCell.lock()->m_level);
 
     m_queueRequestInstance->removeLevelFromTempQueue(levelClass);
-    auto clockSprite = m_clockSprite;
-    auto fade = CCFadeOut::create(Fades::clockFadeOutTime);
-    if (clockSprite) {
-        clockSprite->runAction(fade);
+    CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
+
+    
+
+    if (auto obj = m_levelClass.getClockIcon()) {
+        obj->runAction(fade);
     } else {
         log::error("Didn't found 'clockSprite'");
     }
     //clockSprite->setVisible(false);
 }
 
-void LevelSearch::getGJLevels21(GJSearchObject* searchObject, LevelClass levelClass) {
-    log::debug("LevelSearch::getGJLevels21()");
+void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
     web::WebRequest req = web::WebRequest();
     std::vector<GJGameLevel*> levels;
     GJGameLevel* level = GJGameLevel::create();
@@ -122,32 +68,40 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject, LevelClass levelCl
     req.bodyJSON(json);*/
     // not including the GJP2 to be sure to not see unlisted + friends only levels
 
-    std::string body = std::format("secret={}&type={}&str={}",
+    std::string body = fmt::format("secret={}&type={}&str={}",
         LevelSearch::COMMON_SECRET,
         static_cast<int>(searchObject->m_searchType),
         searchObject->m_searchQuery);
 
-    req.bodyString(body);
-    req.userAgent("");
-    
-    // log::warn("{}", json.dump());
     log::warn("{}", body);
 
+    req.bodyString(body);
+    req.header("Content-Type", "application/x-www-form-urlencoded");
+    req.userAgent("");
+
     req.timeout(std::chrono::seconds(5)); // set the timeout to 5 seconds
+    
+    LevelClass levelClass = m_levelClass;
 
     m_listener.bind([this, levelClass] (web::WebTask::Event* e) {
             if (web::WebResponse* res = e->getValue()) {
-                if (res->ok()) { // original: res->ok()   |   for debug reasons
+                if (!res->ok()) { // original: res->ok()   |   for debug reasons
                     // do stuff
-                    log::info("{}", res->string().unwrapOr("Uh oh!"));
+                    std::string resString = res->string().unwrapOr("-1");
+                    
+                    log::debug("resString = {}", resString);
+
+                    if (resString == "-1") { // there's no level being found (aka the level is friends only)
+                        log::info("if (resString == -1)");
+                        LevelInfos::saveCustomLevelInfos(levelClass, true, true);
+                    }
                 } else {
                     log::error("Request code is not 2xx"); // = no internet (probably) (robtop's servers dosen't return an actual status code by themselves) or the request failed (somehow :broken_hearth:)
                 }
-                hideClockIcon(levelClass);
             } else if (e->isCancelled()) {
                 log::error("The request was cancelled... So sad :(");
-                hideClockIcon(levelClass);
             }
+            hideClockIcon(levelClass);
         });
 
     m_listener.setFilter(req.post(LevelSearch::URL));

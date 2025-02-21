@@ -20,11 +20,9 @@ public:
 
 class LevelSearch {
 public:
-    LevelSearch(CCSprite* clockSprite, QueueRequests* queueRequestInstance);
-    void getGJLevels21(GJSearchObject* searchObject, LevelClass levelClass);
+    LevelSearch(LevelClass levelClass, QueueRequests* queueRequests);
+    void getGJLevels21(GJSearchObject* searchObject);
 private:
-    std::vector<GJGameLevel*> parseRawLevels(std::string rawLevels);
-    matjson::Value rawLevelIntoArray(std::string rawResponseString);
     void hideClockIcon(LevelClass levelClass);
 
     const std::string COMMON_SECRET = "Wmfd2893gb7";
@@ -32,7 +30,6 @@ private:
 
     EventListener<web::WebTask> m_listener;
 
-    LevelCell* m_levelCell;
-    CCSprite* m_clockSprite;
+    LevelClass m_levelClass;
     QueueRequests* m_queueRequestInstance;
 };
