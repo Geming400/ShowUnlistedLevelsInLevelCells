@@ -8,6 +8,9 @@
 using namespace geode::prelude;
 
 class QueueRequests {
+protected:
+    static QueueRequests* instance;
+
 public:
     void addLevelToQueue(LevelClass levelClass);
     void addLevelToTempQueue(LevelClass levelClass);
