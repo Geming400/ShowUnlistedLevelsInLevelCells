@@ -34,6 +34,7 @@
 			"default": true,
 			"name": "Show friend only sprite"
 		},
+
 		"requests-title": {
 			"type": "title",
 			"name": "Requests"
@@ -56,6 +57,25 @@
 			"control": {
 				"slider": true
 			}
+		},
+
+		"debug-title": {
+			"type": "title",
+			"name": "Debug utilities"
+		},
+		"show-debug-logs": {
+			"type": "bool",
+			"default": false,
+			"name": "Show debug logs"
+		},
+		"reset-current-queue": {
+			"type": "custom:reset-current-queue-button",
+			"name": "Reset current queue"
+		},
+		"reset-saved-infos": {
+			"type": "custom:reset-saved-infos-button",
+			"name": "Reset saved infos",
+			"description": "This will remove every informations about each levels (= is unlisted, is friends only, was queued)"
 		}
 	},
 	"resources": {
