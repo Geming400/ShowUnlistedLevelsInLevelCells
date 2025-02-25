@@ -100,6 +100,7 @@ protected:
         QueueRequests::get()->clearQueue();
         QueueRequests::get()->clearTempQueue();
         Notification::create("Successfully reseted the current queue !", NotificationIcon::Success)->show();
+        log::info("Successfully reseted the current queue !");
     }
 
     // Both of these can just be no-ops, since they make no sense for our 

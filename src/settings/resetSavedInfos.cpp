@@ -56,7 +56,7 @@ public:
 // We are inheriting from `SettingNodeV3` directly again, as we don't need the 
 // boilerplate `SettingValueNodeV3` fills in for us because our setting has no 
 // value!
-class MyResetCurrentQueueButtonSettingNodeV3 : public SettingNodeV3 {
+class MyResetSavedInfosButtonSettingNodeV3 : public SettingNodeV3 {
 protected:
     ButtonSprite* m_buttonSprite;
     CCMenuItemSpriteExtra* m_button;
@@ -70,7 +70,7 @@ protected:
         m_buttonSprite = ButtonSprite::create("Reset", "goldFont.fnt", "GJ_button_01.png", .8f);
         m_buttonSprite->setScale(.5f);
         m_button = CCMenuItemSpriteExtra::create(
-            m_buttonSprite, this, menu_selector(MyResetCurrentQueueButtonSettingNodeV3::onButton)
+            m_buttonSprite, this, menu_selector(MyResetSavedInfosButtonSettingNodeV3::onButton)
         );
         this->getButtonMenu()->addChildAtPosition(m_button, Anchor::Center);
         this->getButtonMenu()->setContentWidth(60);
@@ -98,7 +98,8 @@ protected:
         LevelInfos::clearAlreadyQueuedLevels();
         LevelInfos::clearFriendOnlyLevels();
         LevelInfos::clearUnlistedLevels();
-        Notification::create("Successfully reseted saved infos !", NotificationIcon::Success)->show();
+        Notification::create("Successfully reseted saved infos ! Changes will apply on game restart", NotificationIcon::Success)->show();
+        log::info("Successfully reseted saved infos !");
     }
 
     // Both of these can just be no-ops, since they make no sense for our 
@@ -107,8 +108,8 @@ protected:
     void onResetToDefault() override {}
 
 public:
-    static MyResetCurrentQueueButtonSettingNodeV3* create(std::shared_ptr<MyResetSavedInfosButtonSettingV3> setting, float width) {
-        auto ret = new MyResetCurrentQueueButtonSettingNodeV3();
+    static MyResetSavedInfosButtonSettingNodeV3* create(std::shared_ptr<MyResetSavedInfosButtonSettingV3> setting, float width) {
+        auto ret = new MyResetSavedInfosButtonSettingNodeV3();
         if (ret && ret->init(setting, width)) {
             ret->autorelease();
             return ret;
@@ -136,7 +137,7 @@ public:
 
 // Create node as before
 SettingNodeV3* MyResetSavedInfosButtonSettingV3::createNode(float width) {
-    return MyResetCurrentQueueButtonSettingNodeV3::create(
+    return MyResetSavedInfosButtonSettingNodeV3::create(
         std::static_pointer_cast<MyResetSavedInfosButtonSettingV3>(shared_from_this()),
         width
     );
