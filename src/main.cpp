@@ -1,10 +1,11 @@
 #include "LevelInfos.hpp"
-#include "queueRequests.hpp"
+#include "QueueRequests.hpp"
 #include "levelClass.hpp"
 #include "utils.hpp"
 
 #include <Geode/Geode.hpp>
 #include <Geode/modify/LevelCell.hpp>
+#include <Geode/modify/LevelBrowserLayer.hpp>
 #include <Geode/modify/MenuLayer.hpp>
 // The layers under this comment will be used to pick up new unlisted levels
 #include <Geode/modify/LevelInfoLayer.hpp>
@@ -14,8 +15,6 @@ using namespace geode::prelude;
 
 const CCPoint firstPos = {340, 10}; // the first pos, aka it's on the left side
 const CCPoint secondPos = {325, 10}; // the second pos, aka it's on the left side but a little bit less
-
-QueueRequests queueRequests;
 
 const std::vector<SearchType> allowedTypes = {
 	SearchType::Downloaded,
@@ -36,7 +35,7 @@ AND
 if the level is a daily / weekly / event  level
 */
 bool wasQueued(GJGameLevel* level) {
-	return (LevelInfos::wasAlreadyQueued(level) && queueRequests.isQueued(level) && queueRequests.isQueuedInTempQueue(level) && LevelInfos::isLevelDaily(level));
+	return (LevelInfos::wasAlreadyQueued(level) && QueueRequests::get()->isQueued(level) && QueueRequests::get()->isQueuedInTempQueue(level) && LevelInfos::isLevelDaily(level));
 }
 
 class $modify(MyEditLevelLayer, EditLevelLayer) {
@@ -222,15 +221,13 @@ class $modify(MyLevelCell, LevelCell) {
 
 		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly) && !wasQueued(m_level)) {
 			log::debug("Adding {} to queue from main.cpp", m_level->m_levelName);
-			LevelClass levelClass;
-			levelClass.levelCell = this;
-			queueRequests.addLevelToQueue(levelClass);
+			QueueRequests::get()->addLevelToQueue(this);
 		}
 
 		// showing the clock sprite
 
 		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly)) {
-			if (Mod::get()->getSettingValue<bool>("show-clock-icon") && Mod::get()->getSettingValue<bool>("queue-requests") && queueRequests.isQueued(m_level)) {
+			if (Mod::get()->getSettingValue<bool>("show-clock-icon") && Mod::get()->getSettingValue<bool>("queue-requests") && QueueRequests::get()->isQueued(m_level)) {
 				m_fields->m_clockSprite->setVisible(true);
 			}
 		}
@@ -252,7 +249,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 			return false;
 		}
 
-		queueRequests.startLoop();
+		QueueRequests::get()->startLoop();
 
 		if (hasLocalLevelsBeenChecked()) {
 			log::info("Local levels have already been checked");
@@ -276,6 +273,30 @@ class $modify(MyMenuLayer, MenuLayer) {
 		}
 
 		localLevelsHasBeenChecked(); // make it so that this will not happen again
+		return true;
+	}
+};
+
+class $modify(MyLevelBrowserLayer, LevelBrowserLayer) {
+	bool init(GJSearchObject* p0) {
+		if (!LevelBrowserLayer::init(p0)) return false;
+		
+		CCArray* entries = CCArray::create();
+
+		if (m_list->m_listView) {
+			entries = m_list->m_listView->m_entries;
+		} else {
+			log::warn("Whar. entries == nullptr");
+		}
+
+		for (size_t i = 0; i < entries->count(); i++)
+		{
+			auto element = typeinfo_cast<LevelCell*>(entries->objectAtIndex(i));
+			if (element) {
+				LevelCells::updateLevelCell(element);
+			}
+		}
+		
 		return true;
 	}
 };

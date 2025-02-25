@@ -8,6 +8,8 @@
 
 using namespace geode::prelude;
 
+QueueRequests* QueueRequests::instance = nullptr;
+
 /*
 What is the use of the temp queue ?
 Uhhh idk here's a pseudo thing:
@@ -36,69 +38,90 @@ bool hasUserToggledOnQueuedRequests() {
     return Mod::get()->getSettingValue<bool>("queue-requests");
 }
 
-void QueueRequests::addLevelToQueue(LevelClass levelClass) {
-    // log::debug("LevelInfos::wasAlreadyQueued(levelClass.getLevel()) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelClass.getLevel())));
-    // log::debug("isQueued(levelClass.getLevel()) = {}", std::to_string(isQueued(levelClass.getLevel())));
+QueueRequests* QueueRequests::get() {
+    static QueueRequests instance;
+    return &instance;
+}
 
-    if (levelClass.getLevel() && !(LevelInfos::wasAlreadyQueued(levelClass.getLevel()) || isQueued(levelClass.getLevel()))) {
-        m_queuedLevelList.push_back(levelClass);
+void QueueRequests::addLevelToQueue(LevelCell* levelCell) {
+    // log::debug("LevelInfos::wasAlreadyQueued(levelCell->m_level) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelCell->m_level)));
+    // log::debug("isQueued(levelCell->m_level) = {}", std::to_string(isQueued(levelCell->m_level)));
+    
+    levelCell->retain();
+
+    if (levelCell->m_level && !(LevelInfos::wasAlreadyQueued(levelCell->m_level) || isQueued(levelCell->m_level))) {
+        m_queuedLevelList.push_back(WeakRef(levelCell));
     } else {
-        log::info("Level {} won't be added to queue, as it's already in queue or was already in queue", levelClass.getLevel()->m_levelName);
+        log::info("Level {} won't be added to queue, as it's already in queue or was already in queue", levelCell->m_level->m_levelName);
     }
 }
 
-void QueueRequests::addLevelToTempQueue(LevelClass levelClass) {
+void QueueRequests::addLevelToTempQueue(LevelCell* levelCell) {
+
+    levelCell->retain();
+
     log::debug("QueueRequests::addLevelToTempQueue()");
-    // log::debug("LevelInfos::wasAlreadyQueued(levelClass.getLevel()) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelClass.getLevel())));
-    // log::debug("isQueued(levelClass.getLevel()) = {}", std::to_string(isQueued(levelClass.getLevel())));
+    // log::debug("LevelInfos::wasAlreadyQueued(levelCell->m_level) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelCell->m_level)));
+    // log::debug("isQueued(levelCell->m_level) = {}", std::to_string(isQueued(levelCell->m_level)));
 
-    if (levelClass.getLevel() && !isQueuedInTempQueue(levelClass.getLevel())) {
-        m_tempQueuedLevelList.push_back(levelClass);
+    if (levelCell->m_level && !isQueuedInTempQueue(levelCell->m_level)) {
+        m_tempQueuedLevelList.push_back(WeakRef(levelCell));
     } else {
-        log::info("Level {} won't be added to the temp queue because the level is already in the temp queue", levelClass.getLevel()->m_levelName);
+        log::info("Level {} won't be added to the temp queue because the level is already in the temp queue", levelCell->m_level->m_levelName);
     }
 }
 
-void QueueRequests::removeLevelFromQueue(LevelClass levelClass) {
+void QueueRequests::removeLevelFromQueue(LevelCell* levelCell) {
     log::debug("QueueRequests::removeLevelFromQueue()");
-    if (levelClass.getLevel() && (LevelInfos::wasAlreadyQueued(levelClass.getLevel()) || isQueued(levelClass))) {
+    if (levelCell->m_level && (LevelInfos::wasAlreadyQueued(levelCell->m_level) || isQueued(levelCell->m_level))) {
+        auto queuedLevelList = getLockedQueuedLevelList();
+
         auto pos = std::find(
-                m_queuedLevelList.begin(), m_queuedLevelList.end(),
-                levelClass
+                queuedLevelList.begin(), queuedLevelList.end(),
+                levelCell
             );
         
-        if (pos != m_queuedLevelList.end()) {
-            m_queuedLevelList.erase(pos);
+        if (pos != queuedLevelList.end()) {
+            size_t index = std::distance(queuedLevelList.begin(), pos);
+
+            m_queuedLevelList.erase(m_queuedLevelList.begin() + index);
         }
+
+        levelCell->release();
     } else {
-        log::info("Level {} won't be removed in queue, as it wasn't already in queue or wasn't already in queue", levelClass.getLevel()->m_levelName);
+        log::info("Level {} won't be removed in queue, as it wasn't already in queue or wasn't already in queue", levelCell->m_level->m_levelName);
     }
 }
 
-void QueueRequests::removeLevelFromTempQueue(LevelClass levelClass) {
+void QueueRequests::removeLevelFromTempQueue(LevelCell* levelCell) {
     log::debug("QueueRequests::removeLevelFromTempQueue()");
-    if (levelClass.getLevel() && isQueuedInTempQueue(levelClass.getLevel())) {
+    if (levelCell->m_level && isQueuedInTempQueue(levelCell->m_level)) {
+        auto tempQueuedLevelList = getLockedTempQueuedLevelList();
         log::debug("Before std::find -> m_tempQueuedLevelList size: {}", m_tempQueuedLevelList.size());
         //log::debug("removeLevelFromTempQueue -> Starting std::find with level: {}",
-        //   levelClass.getLevel() ? levelClass.getLevel()->m_levelName : "nullptr");
+        //   levelCell->m_level ? levelCell->m_level->m_levelName : "nullptr");
         auto pos = std::find(
-                m_tempQueuedLevelList.begin(), m_tempQueuedLevelList.end(),
-                levelClass
+                tempQueuedLevelList.begin(), tempQueuedLevelList.end(),
+                levelCell
             );
         
-        if (pos != m_tempQueuedLevelList.end()) {
-            m_tempQueuedLevelList.erase(pos);
+        if (pos != tempQueuedLevelList.end()) {
+            size_t index = std::distance(tempQueuedLevelList.begin(), pos);
+
+            m_tempQueuedLevelList.erase(m_tempQueuedLevelList.begin() + index);
         } else {
             for (size_t i = 0; i < m_tempQueuedLevelList.size(); i++)
             {
-                auto level = m_tempQueuedLevelList.at(i).getLevel();
+                auto level = m_tempQueuedLevelList.at(i).lock()->m_level;
                 auto name = level->m_levelName;
             }
             
             log::debug("if (pos == m_tempQueuedLevelList.end())");
         }
+
+        levelCell->release();
     } else {
-        log::info("Level {} won't be removed in queue, as it wasn't already in the temp queue", levelClass.getLevel()->m_levelName);
+        log::info("Level {} won't be removed in queue, as it wasn't already in the temp queue", levelCell->m_level->m_levelName);
     }
 }
 
@@ -108,29 +131,34 @@ bool QueueRequests::isQueuedInTempQueue(GJGameLevel* level) {
 
     for (size_t i = 0; i < m_tempQueuedLevelList.size(); i++)
 	{   
-        GJGameLevel* queuedLevel = m_tempQueuedLevelList.at(i).getLevel();
-        int queuedLevelID = queuedLevel->m_levelID.value();
+        GJGameLevel* queuedLevel = m_tempQueuedLevelList.at(i).lock()->m_level;
+        if (queuedLevel) {
+            int queuedLevelID = queuedLevel->m_levelID.value();
 
-		if (levelID == queuedLevelID) {
-			return true;
-		}
+            if (levelID == queuedLevelID) {
+                return true;
+            }
+        }
 	}
     
     return false;
 }
 
-bool QueueRequests::isQueuedInTempQueue(LevelClass levelClass) {
-    int levelID = levelClass.getLevel()->m_levelID.value();
+bool QueueRequests::isQueuedInTempQueue(LevelCell* levelCell) {
+    int levelID = levelCell->m_level->m_levelID.value();
 
     for (size_t i = 0; i < m_tempQueuedLevelList.size(); i++)
-	{   
-        GJGameLevel* queuedLevel = m_tempQueuedLevelList.at(i).getLevel();
-        int queuedLevelID = queuedLevel->m_levelID.value();
+    {   
+        if (auto obj = m_tempQueuedLevelList.at(i).lock()) {
+            GJGameLevel* queuedLevel = obj->m_level;
+        
+            int queuedLevelID = queuedLevel->m_levelID.value();
 
-		if (levelID == queuedLevelID) {
-			return true;
-		}
-	}
+            if (levelID == queuedLevelID) {
+                return true;
+            }
+        }
+    }
     
     return false;
 }
@@ -140,34 +168,42 @@ bool QueueRequests::isQueued(GJGameLevel* level) {
 
     for (size_t i = 0; i < m_queuedLevelList.size(); i++)
 	{
-        GJGameLevel* queuedLevel = m_queuedLevelList.at(i).getLevel();
-        int queuedLevelID = queuedLevel->m_levelID.value();
+        if (auto obj = m_queuedLevelList.at(i).lock()) {
+            GJGameLevel* queuedLevel = obj->m_level;
+            int queuedLevelID = queuedLevel->m_levelID.value();
 
-		if (levelID == queuedLevelID) {
-			return true;
-		}
+            if (levelID == queuedLevelID) {
+                return true;
+            }
+        }
 	}
     
     return false;
 }
 
-bool QueueRequests::isQueued(LevelClass levelClass) {
-    int levelID = levelClass.getLevel()->m_levelID.value();
+bool QueueRequests::isQueued(LevelCell* levelCell) {
+    int levelID = levelCell->m_level->m_levelID.value();
 
     for (size_t i = 0; i < m_queuedLevelList.size(); i++)
 	{
-        GJGameLevel* queuedLevel = m_queuedLevelList.at(i).getLevel();
-        int queuedLevelID = queuedLevel->m_levelID.value();
+        if (auto obj = m_queuedLevelList.at(i).lock()) {
+            GJGameLevel* queuedLevel = obj->m_level;
+            int queuedLevelID = queuedLevel->m_levelID.value();
 
-		if (levelID == queuedLevelID) {
-			return true;
-		}
+            if (levelID == queuedLevelID) {
+                return true;
+            }
+        }
 	}
     
     return false;
 }
 
 void QueueRequests::startLoop() {
+    if (!m_loopTaskID == 0) {
+        return;
+    }
+
     auto loopInterval = Mod::get()->getSettingValue<int64_t>("queue-requests-timing");
     auto recurringTask = std::make_unique<RecurringTask>(
         [this]() { // add 'this' in the capture list
@@ -181,13 +217,15 @@ void QueueRequests::startLoop() {
                     // levelManagerDelegate->originalDelegate = gameLevelManager->m_levelManagerDelegate;
 
                     // gameLevelManager->m_levelManagerDelegate = levelManagerDelegate;
+                    
+                    LevelCell* levelCell = getLockedQueuedLevelList().at(0); // always get the first element
+                    if (levelCell) {
+                        addLevelToTempQueue(levelCell);
+                    }
 
-                    LevelClass levelClass = m_queuedLevelList.at(0); // always get the first element
-                    addLevelToTempQueue(levelClass);
+                    auto levelSearch = new LevelSearch(levelCell, this);
 
-                    auto levelSearch = new LevelSearch(levelClass, this);
-
-                    GJGameLevel* level = levelClass.getLevel();
+                    GJGameLevel* level = levelCell->m_level;
                     log::info("Queued {}", level->m_levelName);         
 
                     GJSearchObject* searchObject = GJSearchObject::create(SearchType::Search, std::to_string(level->m_levelID.value()));
@@ -206,6 +244,29 @@ void QueueRequests::startLoop() {
     m_scheduler.addTask(std::move(recurringTask));
 }
 
+std::vector<LevelCell*> QueueRequests::getLockedQueuedLevelList() {
+    std::vector<LevelCell*> finalVector;
+
+    for (size_t i = 0; i < m_queuedLevelList.size(); i++)
+    {
+        finalVector.push_back(m_queuedLevelList.at(i).lock());
+    }
+    
+    return finalVector;
+}
+
+std::vector<LevelCell*> QueueRequests::getLockedTempQueuedLevelList() {
+    std::vector<LevelCell*> finalVector;
+
+    for (size_t i = 0; i < m_tempQueuedLevelList.size(); i++)
+    {
+        finalVector.push_back(m_tempQueuedLevelList.at(i).lock());
+    }
+    
+    return finalVector;
+}
+
+
 /*
 @param isEqual instead of returning n > queuedLevelList->count(), it will return n >= queuedLevelList->count()
 */
@@ -215,4 +276,12 @@ bool QueueRequests::isQueuedLevelsSuperiorToN(int n, bool isEqual = false) {
     } else {
         return isQueuedLevelsSuperiorToN(n - 1);
     }
+}
+
+void QueueRequests::clearQueue() {
+    m_queuedLevelList.clear();
+}
+
+void QueueRequests::clearTempQueue() {
+    m_tempQueuedLevelList.clear();
 }
