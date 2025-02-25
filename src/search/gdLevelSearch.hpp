@@ -8,16 +8,6 @@
 
 using namespace geode::prelude;
 
-/*
-// thank CVolton for this: https://discord.com/channels/911701438269386882/979402752121765898/1323744042269278310
-class LMD : public LevelManagerDelegate { // I don't even know how to name this
-public:
-    void loadLevelsFinished(CCArray* p0, char const* p1) override;
-    LevelManagerDelegate* originalDelegate;
-    LevelCell* levelCell;
-};
-*/
-
 class LevelSearch {
 public:
     LevelSearch(LevelCell* levelCell, QueueRequests* queueRequests);
