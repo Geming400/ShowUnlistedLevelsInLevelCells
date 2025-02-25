@@ -23,6 +23,7 @@ add_library(${PROJECT_NAME} SHARED
     src/gdLevelSearch.cpp
 
     src/utils.hpp
+    src/utils.cpp
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})
