@@ -8,7 +8,7 @@
 
 using namespace geode::prelude;
 
-#include "../levelInfos.hpp"
+#include "../level/levelInfos.hpp"
 
 // Inherit from SettingV3 directly over SettingBaseValueV3, as our setting 
 // doesn't actually control any value, but it just a simple button

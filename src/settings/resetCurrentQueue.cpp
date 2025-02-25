@@ -6,7 +6,7 @@
 #include <Geode/binding/CCMenuItemSpriteExtra.hpp>
 #include <Geode/binding/FLAlertLayer.hpp>*/
 
-#include "../queueRequests.hpp"
+#include "../queue/queueRequests.hpp"
 
 #include <Geode/loader/Mod.hpp>
 

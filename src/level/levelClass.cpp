@@ -1,9 +1,5 @@
 #include "levelClass.hpp"
 
-#include <Geode/Geode.hpp>
-
-using namespace geode::prelude;
-
 GJGameLevel* LevelClass::getLevel() const {
     if (auto obj = levelCell.lock()) {
         return obj->m_level;

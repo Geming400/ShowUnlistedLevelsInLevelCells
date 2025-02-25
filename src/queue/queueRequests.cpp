@@ -1,12 +1,6 @@
 #include "queueRequests.hpp"
-#include "levelInfos.hpp"
-#include "levelClass.hpp"
-#include "gdLevelSearch.hpp"
-
-#include "../include/TaskScheduler.hpp"
-#include <Geode/Geode.hpp>
-
-using namespace geode::prelude;
+#include "../level/levelInfos.hpp"
+#include "../search/gdLevelSearch.hpp"
 
 QueueRequests* QueueRequests::instance = nullptr;
 

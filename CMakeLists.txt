@@ -10,20 +10,20 @@ project(ShowUnlistedLevelsInLevelCells VERSION 1.0.0)
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
     
-    src/levelInfos.hpp
-    src/levelInfos.cpp
+    src/level/levelInfos.hpp
+    src/level/levelInfos.cpp
 
-    src/queueRequests.hpp
-    src/queueRequests.cpp
+    src/level/levelClass.hpp
+    src/level/levelClass.cpp
 
-    src/levelClass.hpp
-    src/levelClass.cpp
+    src/queue/queueRequests.hpp
+    src/queue/queueRequests.cpp
 
-    src/gdLevelSearch.hpp
-    src/gdLevelSearch.cpp
+    src/search/gdLevelSearch.hpp
+    src/search/gdLevelSearch.cpp
 
-    src/utils.hpp
-    src/utils.cpp
+    src/utils/utils.hpp
+    src/utils/utils.cpp
 
     src/settings/resetCurrentQueue.cpp
     src/settings/resetSavedInfos.cpp

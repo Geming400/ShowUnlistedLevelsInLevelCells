@@ -1,13 +1,6 @@
 #include "gdLevelSearch.hpp"
-#include "levelInfos.hpp"
-#include "utils.hpp"
-#include "levelClass.hpp"
-#include "queueRequests.hpp"
-
-#include <Geode/Geode.hpp>
-#include <Geode/utils/web.hpp>
-
-using namespace geode::prelude;
+#include "../level/levelInfos.hpp"
+#include "../utils/utils.hpp"
 
 /*
 @param p0 this CCArray contains a list of GJGameLevel*
@@ -35,21 +28,26 @@ void LMD::loadLevelsFinished(CCArray* p0, char const* p1) {
 }
 */
 
-LevelSearch::LevelSearch(LevelClass levelClass, QueueRequests* queueRequest) {
-    m_levelClass = levelClass;
+LevelSearch::LevelSearch(LevelCell* levelCell, QueueRequests* queueRequest) {
+    m_levelCell = levelCell;
     m_queueRequestInstance = queueRequest;
 }
 
-void LevelSearch::hideClockIcon(LevelClass levelClass) {
-    LevelInfos::addQueuedLevel(levelClass.levelCell.lock()->m_level);
+LevelSearch::LevelSearch(WeakRef<LevelCell> levelCell, QueueRequests* queueRequest) {
+    m_levelCell = levelCell.lock();
+    m_queueRequestInstance = queueRequest;
+}
 
-    m_queueRequestInstance->removeLevelFromTempQueue(levelClass);
+void LevelSearch::hideClockIcon(LevelCell* levelCell) {
+    LevelInfos::addQueuedLevel(levelCell->m_level);
+
+    m_queueRequestInstance->removeLevelFromTempQueue(levelCell);
     CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
 
     
 
-    if (auto obj = m_levelClass.getClockIcon()) {
-        obj->runAction(fade);
+    if (auto obj = m_levelCell.lock()) {
+        obj->getChildByID(Ids::CLOCK_SPRITE_ID)->runAction(fade);
     } else {
         log::error("Didn't found 'clockSprite'");
     }
@@ -81,9 +79,9 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
 
     req.timeout(std::chrono::seconds(5)); // set the timeout to 5 seconds
     
-    LevelClass levelClass = m_levelClass;
+    LevelCell* levelCell = m_levelCell.lock();
 
-    m_listener.bind([this, levelClass] (web::WebTask::Event* e) {
+    m_listener.bind([this, levelCell] (web::WebTask::Event* e) {
             if (web::WebResponse* res = e->getValue()) {
                 if (!res->ok()) { // original: res->ok()   |   for debug reasons
                     // do stuff
@@ -93,7 +91,9 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
 
                     if (resString == "-1") { // there's no level being found (aka the level is friends only)
                         log::info("if (resString == -1)");
-                        LevelInfos::saveCustomLevelInfos(levelClass, true, true);
+                        if (levelCell) {
+                            LevelInfos::saveCustomLevelInfos(levelCell, true, true);
+                        }
                     }
                 } else {
                     log::error("Request code is not 2xx"); // = no internet (probably) (robtop's servers dosen't return an actual status code by themselves) or the request failed (somehow :broken_hearth:)
@@ -101,7 +101,7 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
             } else if (e->isCancelled()) {
                 log::error("The request was cancelled... So sad :(");
             }
-            hideClockIcon(levelClass);
+            hideClockIcon(levelCell);
         });
 
     m_listener.setFilter(req.post(LevelSearch::URL));

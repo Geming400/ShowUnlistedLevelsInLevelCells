@@ -1,7 +1,7 @@
-#include "LevelInfos.hpp"
-#include "QueueRequests.hpp"
-#include "levelClass.hpp"
-#include "utils.hpp"
+#include "level/LevelInfos.hpp"
+#include "level/levelClass.hpp"
+#include "queue/QueueRequests.hpp"
+#include "utils/utils.hpp"
 
 #include <Geode/Geode.hpp>
 #include <Geode/modify/LevelCell.hpp>
@@ -285,6 +285,7 @@ class $modify(MyLevelBrowserLayer, LevelBrowserLayer) {
 
 		if (m_list->m_listView) {
 			entries = m_list->m_listView->m_entries;
+			log::info("entries is not nullptr !");
 		} else {
 			log::warn("Whar. entries == nullptr");
 		}

@@ -1,10 +1,5 @@
 #include "levelInfos.hpp"
-#include "utils.hpp"
-#include "levelClass.hpp"
-
-#include <Geode/Geode.hpp>
-
-using namespace geode::prelude;
+#include "../utils/utils.hpp"
 
 const std::string EMPTY_ARRAY = matjson::Value::array().dump(matjson::NO_INDENTATION);
 const int DEFAULT_NO_LEVEL_ID = 0;
@@ -64,6 +59,9 @@ void LevelInfos::addUnlistedLevel(GJGameLevel* level) {
 	Mod::get()->setSavedValue<std::string>(unlistedLevelsKey, unlistedLevels.dump());
 }
 
+void LevelInfos::clearUnlistedLevels() {
+	Mod::get()->setSavedValue<std::string>(unlistedLevelsKey, EMPTY_ARRAY);
+}
 
 // friend only levels
 
@@ -108,6 +106,9 @@ void LevelInfos::addFriendOnlyLevel(GJGameLevel* level) {
 	Mod::get()->setSavedValue<std::string>(friendOnlyLevelsKey, friendOnlyLevels.dump());
 }
 
+void LevelInfos::clearFriendOnlyLevels() {
+	Mod::get()->setSavedValue<std::string>(friendOnlyLevelsKey, EMPTY_ARRAY);
+}
 
 // queued levels
 
@@ -151,6 +152,9 @@ void LevelInfos::addQueuedLevel(GJGameLevel* level) {
 	Mod::get()->setSavedValue<std::string>(queuedLevelsKey, queuedLevels.dump());
 }
 
+void LevelInfos::clearAlreadyQueuedLevels() {
+	Mod::get()->setSavedValue<std::string>(queuedLevelsKey, EMPTY_ARRAY);
+}
 
 // add the  unlisted / friend only  levels
 
@@ -188,28 +192,26 @@ void LevelInfos::saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool 
 This function is like saveLevelInfos except it won't see the content of level->m_unlisted and level->m_friendsOnly
 It's the mod that defines if the level is unlisted or friend only
 */
-void LevelInfos::saveCustomLevelInfos(LevelClass levelClass, bool isUnlisted, bool isFriendOnly) {
+void LevelInfos::saveCustomLevelInfos(LevelCell* levelCell, bool isUnlisted, bool isFriendOnly) {
 	log::debug("LevelInfos::saveCustomLevelInfos()");
 	if (isUnlisted) {
 		CCFadeTo* iconFades = CCFadeTo::create(Fades::Fades::iconsFadeInTime, Fades::FadeTo::iconsFadeTo);
-		if (auto LevelCell = levelClass.levelCell.lock()) {
-			CCNode* unlistedSprite = LevelCell->getChildByID("unlisted-sprite"_spr);
+		if (auto LevelCell = levelCell) {
+			CCNode* unlistedSprite = levelCell->getChildByID(Ids::UNLISTED_SPRITE_ID);
 			unlistedSprite->runAction(iconFades);
 			unlistedSprite->setVisible(true);
 		}
 
-		addUnlistedLevel(levelClass.getLevel());
+		addUnlistedLevel(levelCell->m_level);
 	}
 
 	if (isFriendOnly) {
 		CCFadeTo* FadeTo = CCFadeTo::create(Fades::Fades::iconsFadeInTime, Fades::FadeTo::iconsFadeTo);
-		if (auto levelCell = levelClass.levelCell.lock()) {
-			CCNode* friendOnlySprite = levelCell->getChildByID("friend-only-sprite"_spr);
+		CCNode* friendOnlySprite = levelCell->getChildByID(Ids::FRIEND_ONLY_SPRITE_ID);
 
-			friendOnlySprite->runAction(FadeTo);
-			friendOnlySprite->setVisible(true);
-		}
-		addFriendOnlyLevel(levelClass.getLevel());
+		friendOnlySprite->runAction(FadeTo);
+		friendOnlySprite->setVisible(true);
+		addFriendOnlyLevel(levelCell->m_level);
 	}
 }
 

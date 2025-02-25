@@ -15,12 +15,16 @@ public:
 
 	static void addUnlistedLevel(GJGameLevel* level);
 
+	static void clearUnlistedLevels();
+
 	// friend only levels
 	static auto getFriendOnlyLevels();
 
 	static bool isFriendOnly(GJGameLevel* level);
 
 	static void addFriendOnlyLevel(GJGameLevel* level);
+
+	static void clearFriendOnlyLevels();
 
 	// queued levels
 
@@ -30,11 +34,13 @@ public:
 
 	static void addQueuedLevel(GJGameLevel* level);
 
+	static void clearAlreadyQueuedLevels();
+
 	// add the  unlisted / friend only  levels
 	static void saveLevelInfos(GJGameLevel* level);
 
 	static void saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly);
-	static void saveCustomLevelInfos(LevelClass levelClass, bool isUnlisted, bool isFriendOnly);
+	static void saveCustomLevelInfos(LevelCell* levelCell, bool isUnlisted, bool isFriendOnly);
 
 	static void saveInfosOfLevelsInArray(CCArray* levels);
 

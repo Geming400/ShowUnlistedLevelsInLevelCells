@@ -1,7 +1,7 @@
 // This file has the worst name ever but finding good names is hard :(
 #pragma once
 
-#include "utils.hpp"
+#include "../utils/utils.hpp"
 
 #include <Geode/Geode.hpp>
 

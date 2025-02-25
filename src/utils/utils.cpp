@@ -1,6 +1,6 @@
 #include "utils.hpp"
-#include "levelInfos.hpp"
-#include "queueRequests.hpp"
+#include "../level/levelInfos.hpp"
+#include "../queue/queueRequests.hpp"
 
 void LevelCells::updateLevelCell(LevelCell* levelCell) {
     CCSprite* clockSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::CLOCK_SPRITE_ID));
