@@ -27,6 +27,6 @@ namespace LevelCells {
     void updateLevelCell(LevelCell* levelCell);
 }
 
-namespace Cocos {
-    CCArray* getObjectsFromDict(CCDictionary* dict);
+namespace CocosUtils {
+    CCArray* getValuesFromDict(const CCDictionaryExt<int, LevelCell> dict);
 }

@@ -25,24 +25,11 @@ void LevelCells::updateLevelCell(LevelCell* levelCell) {
     }
 }
 
-/*
-@note Only works for CCDictionaries that use int keys. If it uses gd::string keys instead, it will return `nullptr`
-*/
-CCArray* Cocos::getObjectsFromDict(CCDictionary* dict) {
-    try {
-        dict->objectForKey(0);
-    } catch (...) {
-        return nullptr; // it returns nullptr if objectForKey() did an assert
-    }
+CCArray* CocosUtils::getValuesFromDict(CCDictionaryExt<int, LevelCell> dict) {
+    CCArray* values = CCArray::create();
 
-    CCArray* finalArray = CCArray::create();
+    for (auto [_, v] : dict) { values->addObject(v); }
+    //for (auto& [_, v] : CCDictionaryExt<LevelCell>(dict)) { values->addObject(v); }
 
-    for (size_t i = 0; i < dict->count(); i++)
-    {
-        auto obj = dict->objectForKey(i);
-
-        finalArray->addObject(obj);
-    }
-
-    return finalArray;
+    return values;
 }
