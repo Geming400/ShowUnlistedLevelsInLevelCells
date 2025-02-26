@@ -12,6 +12,13 @@
 	"developer": "Geming400",
 	"description": "Will show if the level is unlisted",
 	"tags": ["online", "offline"],
+	"links": {
+		"source": "https://github.com/Geming400/ShowUnlistedLevelsInLevelCells"
+	},
+	"issues": {
+		"info": "You can report issues on the Github issue tracker !",
+		"url": "https://github.com/Geming400/ShowUnlistedLevelsInLevelCells/issues"
+	},
 	"settings": {
 		"display-title": {
 			"type": "title",
