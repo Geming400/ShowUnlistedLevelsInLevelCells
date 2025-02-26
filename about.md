@@ -2,7 +2,7 @@
 
 This mod will allow you to see which levels are **<cb>unlisted in level cells</cb>**.
 
-You can read the [readme.md](https://insertlinkhere.please) to find more information on how this mod works.
+You can read the [readme.md](https://github.com/Geming400/ShowUnlistedLevelsInLevelCells/blob/main/README.md) to find more information on how this mod works.
 
 ## credit
 
