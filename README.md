@@ -39,7 +39,7 @@ If you have any issue understanding what I did, be sure to dm on discord (linked
 
 ## TODO
 
-- Use `m_tempQueuedLevelList`
+- ~~Use `m_tempQueuedLevelList`~~
 - Use `CCArray`s when possible instead of `std::vector`s.
 - Make a mod icon
 - Maybe fix android build issues
