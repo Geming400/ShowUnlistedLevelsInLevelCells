@@ -9,3 +9,4 @@ You can read the [readme.md](https://github.com/Geming400/ShowUnlistedLevelsInLe
 Thank to [Alphalaneous](https://geode-sdk.org/mods?developer=alphalaneous) for making the mod icon !
 Thank to [zidnes](https://x.com/xviaexclusive) for making the eye icon !
 *(also thank to robtop for making the friend icon)*
+And big big thank to [#dev-help](https://discord.com/channels/911701438269386882/979402752121765898) for helping me fix my dumb mistakes
