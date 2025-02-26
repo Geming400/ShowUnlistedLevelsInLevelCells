@@ -26,3 +26,7 @@ namespace Ids {
 namespace LevelCells {
     void updateLevelCell(LevelCell* levelCell);
 }
+
+namespace Cocos {
+    CCArray* getObjectsFromDict(CCDictionary* dict);
+}
