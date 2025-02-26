@@ -41,7 +41,7 @@ void QueueRequests::addLevelToQueue(LevelCell* levelCell) {
     // log::debug("LevelInfos::wasAlreadyQueued(levelCell->m_level) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelCell->m_level)));
     // log::debug("isQueued(levelCell->m_level) = {}", std::to_string(isQueued(levelCell->m_level)));
     
-    levelCell->retain();
+    //levelCell->retain();
 
     if (levelCell->m_level && !(LevelInfos::wasAlreadyQueued(levelCell->m_level) || isQueued(levelCell->m_level))) {
         m_queuedLevelList.push_back(WeakRef(levelCell));
@@ -52,7 +52,7 @@ void QueueRequests::addLevelToQueue(LevelCell* levelCell) {
 
 void QueueRequests::addLevelToTempQueue(LevelCell* levelCell) {
 
-    levelCell->retain();
+    //levelCell->retain();
 
     log::debug("QueueRequests::addLevelToTempQueue()");
     // log::debug("LevelInfos::wasAlreadyQueued(levelCell->m_level) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelCell->m_level)));
@@ -67,6 +67,7 @@ void QueueRequests::addLevelToTempQueue(LevelCell* levelCell) {
 
 void QueueRequests::removeLevelFromQueue(LevelCell* levelCell) {
     log::debug("QueueRequests::removeLevelFromQueue()");
+
     if (levelCell->m_level && (LevelInfos::wasAlreadyQueued(levelCell->m_level) || isQueued(levelCell->m_level))) {
         auto queuedLevelList = getLockedQueuedLevelList();
 
@@ -81,7 +82,7 @@ void QueueRequests::removeLevelFromQueue(LevelCell* levelCell) {
             m_queuedLevelList.erase(m_queuedLevelList.begin() + index);
         }
 
-        levelCell->release();
+        //levelCell->release();
     } else {
         log::info("Level {} won't be removed in queue, as it wasn't already in queue or wasn't already in queue", levelCell->m_level->m_levelName);
     }
@@ -89,6 +90,7 @@ void QueueRequests::removeLevelFromQueue(LevelCell* levelCell) {
 
 void QueueRequests::removeLevelFromTempQueue(LevelCell* levelCell) {
     log::debug("QueueRequests::removeLevelFromTempQueue()");
+    
     if (levelCell->m_level && isQueuedInTempQueue(levelCell->m_level)) {
         auto tempQueuedLevelList = getLockedTempQueuedLevelList();
         log::debug("Before std::find -> m_tempQueuedLevelList size: {}", m_tempQueuedLevelList.size());
@@ -113,7 +115,7 @@ void QueueRequests::removeLevelFromTempQueue(LevelCell* levelCell) {
             log::debug("if (pos == m_tempQueuedLevelList.end())");
         }
 
-        levelCell->release();
+        //levelCell->release();
     } else {
         log::info("Level {} won't be removed in queue, as it wasn't already in the temp queue", levelCell->m_level->m_levelName);
     }
