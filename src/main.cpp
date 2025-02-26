@@ -159,8 +159,6 @@ class $modify(MyLevelCell, LevelCell) {
 		m_fields->m_isUnlisted = LevelInfos::isUnlisted(m_level);
 		m_fields->m_isFriendOnly = LevelInfos::isFriendOnly(m_level);
 
-
-
 		// unlistedSprite
 
 		m_fields->m_unlistedSprite = CCSprite::create("unlisted-icon.png"_spr);
@@ -199,9 +197,8 @@ class $modify(MyLevelCell, LevelCell) {
 		
 		addChild(m_fields->m_friendOnlySprite);
 
-		if (m_level->m_friendsOnly || m_fields->m_isFriendOnly) {
-			if (Mod::get()->getSettingValue<bool>("show-friend-only-sprite"))
-			{
+		if (m_level->m_friendsOnly || m_fields->m_isFriendOnly && !wasQueued(m_level)) { // '!wasQueued(m_level)' is a extra check to prevent a bug where the level has
+			if (Mod::get()->getSettingValue<bool>("show-friend-only-sprite")) {			 // the clock icon visible and the unlisted icon / friends only icon too
 				m_fields->m_friendOnlySprite->setVisible(true);
 			}
 		}
@@ -226,7 +223,7 @@ class $modify(MyLevelCell, LevelCell) {
 
 		// showing the clock sprite
 
-		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly)) {
+		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly) && !wasQueued(m_level)) {
 			if (Mod::get()->getSettingValue<bool>("show-clock-icon") && Mod::get()->getSettingValue<bool>("queue-requests") && QueueRequests::get()->isQueued(m_level)) {
 				m_fields->m_clockSprite->setVisible(true);
 			}
@@ -279,6 +276,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 
 class $modify(MyLevelBrowserLayer, LevelBrowserLayer) {
 	bool init(GJSearchObject* p0) {
+		log::debug("LevelBrowserLayer::init()");
 		if (!LevelBrowserLayer::init(p0)) return false;
 		
 		CCArray* entries = CCArray::create();
