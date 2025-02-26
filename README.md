@@ -10,11 +10,11 @@ Show unlisted levels in level cells is a mod that will show which level is unlis
 
 - The unlisted icon: 
 
-<img src="./ressources/unlisted-icon.png" alt="the unlisted icon">
+<img src="./resources/unlisted-icon.png" alt="the unlisted icon">
 
 - The friend only icon: 
 
-<img src="./ressources/friend-only-icon.png" alt="the friend only icon">
+<img src="./resources/friend-only-icon.png" alt="the friend only icon">
 
 ## How does this mod work ?
 
