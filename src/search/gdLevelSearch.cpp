@@ -38,7 +38,9 @@ LevelSearch::LevelSearch(WeakRef<LevelCell> levelCell, QueueRequests* queueReque
     m_queueRequestInstance = queueRequest;
 }
 
-void LevelSearch::hideClockIcon(LevelCell* levelCell) {
+void LevelSearch::hideClockIcon() {
+    Ref<LevelCell> levelCell = m_levelCell.lock();
+    if (!levelCell) { return; }
     LevelInfos::addQueuedLevel(levelCell->m_level);
 
     m_queueRequestInstance->removeLevelFromTempQueue(levelCell);
@@ -46,11 +48,8 @@ void LevelSearch::hideClockIcon(LevelCell* levelCell) {
 
     
 
-    if (auto obj = m_levelCell.lock()) {
-        obj->getChildByID(Ids::CLOCK_SPRITE_ID)->runAction(fade);
-    } else {
-        log::error("Didn't found 'clockSprite'");
-    }
+    CCNode* sprite = levelCell->getChildByID(Ids::CLOCK_SPRITE_ID);
+    if (sprite) { sprite->runAction(fade); }
     //clockSprite->setVisible(false);
 }
 
@@ -101,7 +100,7 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
             } else if (e->isCancelled()) {
                 log::error("The request was cancelled... So sad :(");
             }
-            hideClockIcon(levelCell);
+            hideClockIcon();
         });
 
     m_listener.setFilter(req.post(LevelSearch::URL));

@@ -15,7 +15,7 @@ public:
 
     void getGJLevels21(GJSearchObject* searchObject);
 private:
-    void hideClockIcon(LevelCell* levelCell);
+    void hideClockIcon();
 
     const std::string COMMON_SECRET = "Wmfd2893gb7";
     const std::string URL = "http://www.boomlings.com/database/getGJLevels21.php";
