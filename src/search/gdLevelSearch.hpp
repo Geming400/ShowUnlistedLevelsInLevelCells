@@ -10,8 +10,8 @@ using namespace geode::prelude;
 
 class LevelSearch {
 public:
-    LevelSearch(LevelCell* levelCell, QueueRequests* queueRequests);
-    LevelSearch(WeakRef<LevelCell> levelCell, QueueRequests* queueRequest);
+    LevelSearch(LevelCell* levelCell);
+    LevelSearch(WeakRef<LevelCell> levelCell);
 
     void getGJLevels21(GJSearchObject* searchObject);
 private:
@@ -23,5 +23,4 @@ private:
     EventListener<web::WebTask> m_listener;
 
     WeakRef<LevelCell> m_levelCell = nullptr;
-    QueueRequests* m_queueRequestInstance;
 };

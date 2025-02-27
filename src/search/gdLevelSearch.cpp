@@ -28,14 +28,12 @@ void LMD::loadLevelsFinished(CCArray* p0, char const* p1) {
 }
 */
 
-LevelSearch::LevelSearch(LevelCell* levelCell, QueueRequests* queueRequest) {
+LevelSearch::LevelSearch(LevelCell* levelCell) {
     m_levelCell = levelCell;
-    m_queueRequestInstance = queueRequest;
 }
 
-LevelSearch::LevelSearch(WeakRef<LevelCell> levelCell, QueueRequests* queueRequest) {
+LevelSearch::LevelSearch(WeakRef<LevelCell> levelCell) {
     m_levelCell = levelCell.lock();
-    m_queueRequestInstance = queueRequest;
 }
 
 void LevelSearch::hideClockIcon() {
@@ -43,7 +41,7 @@ void LevelSearch::hideClockIcon() {
     if (!levelCell) { return; }
     LevelInfos::addQueuedLevel(levelCell->m_level);
 
-    m_queueRequestInstance->removeLevelFromTempQueue(levelCell);
+    QueueRequests::get()->removeLevelFromTempQueue(levelCell);
     CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
 
     
