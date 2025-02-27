@@ -24,12 +24,3 @@ void LevelCells::updateLevelCell(LevelCell* levelCell) {
         friendOnlySprite->setVisible(false);
     }
 }
-
-CCArray* CocosUtils::getValuesFromDict(CCDictionaryExt<int, LevelCell> dict) {
-    CCArray* values = CCArray::create();
-
-    for (auto [_, v] : dict) { values->addObject(v); }
-    //for (auto& [_, v] : CCDictionaryExt<LevelCell>(dict)) { values->addObject(v); }
-
-    return values;
-}

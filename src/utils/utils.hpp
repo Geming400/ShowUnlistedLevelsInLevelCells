@@ -27,6 +27,13 @@ namespace LevelCells {
     void updateLevelCell(LevelCell* levelCell);
 }
 
-namespace CocosUtils {
-    CCArray* getValuesFromDict(const CCDictionaryExt<int, LevelCell> dict);
+namespace Misc {
+    template<class Key, class Value>
+    std::vector<Value> getValuesFromMap(std::map<Key, Value> map) {
+        std::vector<Value> values;
+    
+        for (auto [_, v] : map) { values.push_back(v); }
+    
+        return values;
+    }
 }
