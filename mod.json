@@ -84,9 +84,16 @@
 			"name": "Reset saved infos",
 			"description": "This will remove every informations about each levels (= is unlisted, is friends only, was queued)"
 		},
+		"kill-queue": {
+			"type": "custom:kill-queue-button",
+			"name": "Kill queue",
+			"description": "This stops the queue"
+		},
 		"stop-queue": {
-			"type": "custom:stop-queue-button",
-			"name": "Stop queue"
+			"type": "bool",
+			"default": false,
+			"name": "Stop queue",
+			"description": "This will prevent the queue from starting. To stop it use the 'Kill queue' button above"
 		}
 	},
 	"resources": {

@@ -12,11 +12,11 @@ using namespace geode::prelude;
 
 // Inherit from SettingV3 directly over SettingBaseValueV3, as our setting 
 // doesn't actually control any value, but it just a simple button
-class MyStopQueueSettingV3 : public SettingV3 {
+class MyKillQueueSettingV3 : public SettingV3 {
 public:
     // Once again implement the parse function
     static Result<std::shared_ptr<SettingV3>> parse(std::string const& key, std::string const& modID, matjson::Value const& json) {
-        auto res = std::make_shared<MyStopQueueSettingV3>();
+        auto res = std::make_shared<MyKillQueueSettingV3>();
         auto root = checkJson(json, "MyButtonSettingV3");
 
         // `parseBaseProperties` parses all base properties, including 
@@ -56,21 +56,21 @@ public:
 // We are inheriting from `SettingNodeV3` directly again, as we don't need the 
 // boilerplate `SettingValueNodeV3` fills in for us because our setting has no 
 // value!
-class MyStopQueueSettingNodeV3 : public SettingNodeV3 {
+class MyKillQueueSettingNodeV3 : public SettingNodeV3 {
 protected:
     ButtonSprite* m_buttonSprite;
     CCMenuItemSpriteExtra* m_button;
 
-    bool init(std::shared_ptr<MyStopQueueSettingV3> setting, float width) {
+    bool init(std::shared_ptr<MyKillQueueSettingV3> setting, float width) {
         if (!SettingNodeV3::init(setting, width))
             return false;
     
         // We just create the button and add it to the setting's menu
         
-        m_buttonSprite = ButtonSprite::create("Stop", "goldFont.fnt", "GJ_button_01.png", .8f);
+        m_buttonSprite = ButtonSprite::create("Kill", "goldFont.fnt", "GJ_button_01.png", .8f);
         m_buttonSprite->setScale(.5f);
         m_button = CCMenuItemSpriteExtra::create(
-            m_buttonSprite, this, menu_selector(MyStopQueueSettingNodeV3::onButton)
+            m_buttonSprite, this, menu_selector(MyKillQueueSettingNodeV3::onButton)
         );
         this->getButtonMenu()->addChildAtPosition(m_button, Anchor::Center);
         this->getButtonMenu()->setContentWidth(60);
@@ -107,8 +107,8 @@ protected:
     void onResetToDefault() override {}
 
 public:
-    static MyStopQueueSettingNodeV3* create(std::shared_ptr<MyStopQueueSettingV3> setting, float width) {
-        auto ret = new MyStopQueueSettingNodeV3();
+    static MyKillQueueSettingNodeV3* create(std::shared_ptr<MyKillQueueSettingV3> setting, float width) {
+        auto ret = new MyKillQueueSettingNodeV3();
         if (ret && ret->init(setting, width)) {
             ret->autorelease();
             return ret;
@@ -129,20 +129,20 @@ public:
     // This is not necessary, but it makes it so you don't have to do the 
     // pointer cast every time you want to access the properties of the button 
     // setting
-    std::shared_ptr<MyStopQueueSettingV3> getSetting() const {
-        return std::static_pointer_cast<MyStopQueueSettingV3>(SettingNodeV3::getSetting());
+    std::shared_ptr<MyKillQueueSettingV3> getSetting() const {
+        return std::static_pointer_cast<MyKillQueueSettingV3>(SettingNodeV3::getSetting());
     }
 };
 
 // Create node as before
-SettingNodeV3* MyStopQueueSettingV3::createNode(float width) {
-    return MyStopQueueSettingNodeV3::create(
-        std::static_pointer_cast<MyStopQueueSettingV3>(shared_from_this()),
+SettingNodeV3* MyKillQueueSettingV3::createNode(float width) {
+    return MyKillQueueSettingNodeV3::create(
+        std::static_pointer_cast<MyKillQueueSettingV3>(shared_from_this()),
         width
     );
 }
 
 // Register as before
 $execute {
-    (void)Mod::get()->registerCustomSettingType("stop-queue-button", &MyStopQueueSettingV3::parse);
+    (void)Mod::get()->registerCustomSettingType("kill-queue-button", &MyKillQueueSettingV3::parse);
 }
