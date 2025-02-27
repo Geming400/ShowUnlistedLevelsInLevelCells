@@ -27,6 +27,7 @@ add_library(${PROJECT_NAME} SHARED
 
     src/settings/resetCurrentQueue.cpp
     src/settings/resetSavedInfos.cpp
+    src/settings/stopQueue.cpp
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})

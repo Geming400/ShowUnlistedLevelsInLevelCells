@@ -83,6 +83,10 @@
 			"type": "custom:reset-saved-infos-button",
 			"name": "Reset saved infos",
 			"description": "This will remove every informations about each levels (= is unlisted, is friends only, was queued)"
+		},
+		"stop-queue": {
+			"type": "custom:stop-queue-button",
+			"name": "Stop queue"
 		}
 	},
 	"resources": {
