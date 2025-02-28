@@ -51,7 +51,6 @@ WeakRef<LevelCell> LevelSearch::getLevelCell(int levelID) {
 
 void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
     web::WebRequest req = web::WebRequest();
-    std::vector<GJGameLevel*> levels;
     std::string _levelID = searchObject->m_searchQuery;
     int levelID = std::stoi(_levelID); // = _levelID to int
 

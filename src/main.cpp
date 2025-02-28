@@ -16,7 +16,7 @@ using namespace geode::prelude;
 const CCPoint firstPos = {340, 10}; // the first pos, aka it's on the left side
 const CCPoint secondPos = {325, 10}; // the second pos, aka it's on the left side but a little bit less
 
-const std::vector<SearchType> allowedTypes = {
+const std::unordered_set<SearchType> allowedTypes = {
 	SearchType::Downloaded,
 	SearchType::FavouriteLevels,
 	SearchType::MyLevels,
@@ -68,13 +68,7 @@ class $modify(MyLevelCell, LevelCell) {
 	};
 
 	bool isSearchTypeAllowed(SearchType searchType) {
-		for (size_t i = 0; i < allowedTypes.size(); i++)
-		{
-			if (searchType == allowedTypes.at(i)) {
-				return true;
-			}
-		}
-		return false;
+		return allowedTypes.contains(searchType);
 	}
 
 	/*
