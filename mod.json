@@ -75,25 +75,23 @@
 			"default": false,
 			"name": "Show debug logs"
 		},
-		"reset-current-queue": {
+		"reset-current-queue-button": {
 			"type": "custom:reset-current-queue-button",
 			"name": "Reset current queue"
 		},
-		"reset-saved-infos": {
+		"reset-saved-infos-button": {
 			"type": "custom:reset-saved-infos-button",
 			"name": "Reset saved infos",
 			"description": "This will remove every informations about each levels (= is unlisted, is friends only, was queued)"
 		},
-		"kill-queue": {
-			"type": "custom:kill-queue-button",
-			"name": "Kill queue",
-			"description": "This stops the queue"
+		"stop-queue-button": {
+			"type": "custom:stop-queue-button",
+			"name": "Stop queue"
 		},
-		"stop-queue": {
+		"let-queue-start": {
 			"type": "bool",
-			"default": false,
-			"name": "Stop queue",
-			"description": "This will prevent the queue from starting. To stop it use the 'Kill queue' button above"
+			"default": true,
+			"name": "Let queue start"
 		}
 	},
 	"resources": {
