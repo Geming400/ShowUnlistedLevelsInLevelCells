@@ -80,34 +80,6 @@ class $modify(MyLevelCell, LevelCell) {
 	}
 
 	/*
-	gets the n-th parent of 'this', then typeinfo casts it into T
-
-	@param n the num of iterations to get the desired parent
-	*/
-	template<typename T>
-	T getRecursiveParent(int n) {
-		CCNode* parent = this->getParent();
-
-		if (parent && n <= 0) {
-			return typeinfo_cast<T>(parent);
-		} else if (parent && n > 0) {
-			return typeinfo_cast<T>(getRecursiveParent(n-1));
-		}
-		return nullptr;
-	}
-	/*gets the n-th parent of 'this', then returns a `CCNode` pointer*/
-	CCNode* getRecursiveParent(int n) {
-		CCNode* parent = this->getParent();
-
-		if (parent && n <= 0) {
-			return parent;
-		} else if (parent && n > 0) {
-			return getRecursiveParent(n-1);
-		}
-		return nullptr;
-	}
-
-	/*
 	This will get the search type from a GJSearchObject from the fifth parent (yes I could have hooked LevelBrowserLayer but whatever)
 	*/
 	bool isSearchTypeAllowed() {
