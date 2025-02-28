@@ -180,6 +180,18 @@ std::vector<WeakRef<LevelCell>> QueueRequests::getTempQueue() {
     return Misc::getValuesFromMap<int, WeakRef<LevelCell>>(m_tempQueuedLevelList);
 }
 
+void print_map(std::map<int, WeakRef<LevelCell>>const &m) {
+    log::info("------------");
+    for (auto const &pair: m) {
+        if (pair.second.valid()) {
+            log::info("({}: VALID LEVEL CELL)", std::to_string(pair.first));
+        } else {
+            log::info("({}: NOT A VALID LEVEL CELL)", std::to_string(pair.first));
+        }
+    }
+    log::info("------------");
+}
+
 WeakRef<LevelCell> QueueRequests::getLevelCellFromLevelID(int levelID, bool isTempQueue) {
     std::map<int, WeakRef<LevelCell>> queue;
 
@@ -189,5 +201,8 @@ WeakRef<LevelCell> QueueRequests::getLevelCellFromLevelID(int levelID, bool isTe
         queue = m_queuedLevelList;
     }
     
+    if (Mod::get()->getSettingValue<bool>("show-debug-logs")) {
+        print_map(queue);
+    }
     return queue[levelID];
 }
