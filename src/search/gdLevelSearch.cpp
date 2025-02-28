@@ -29,14 +29,7 @@ void LMD::loadLevelsFinished(CCArray* p0, char const* p1) {
 */
 
 void LevelSearch::hideClockIcon(int levelID) {
-    WeakRef<LevelCell> _levelCell = getLevelCell(levelID);
-    if (QueueRequests::get()->getTempQueue().size() == 0) {
-        log::debug("empty");
-    }
-    if (!_levelCell) {
-        log::error("Level cell = nullptr");
-    }
-    Ref<LevelCell> levelCell = _levelCell.lock();
+    Ref<LevelCell> levelCell = getLevelCell(levelID).lock();
     if (!levelCell) { return; }
     LevelInfos::addQueuedLevel(levelCell->m_level);
 
@@ -49,6 +42,8 @@ void LevelSearch::hideClockIcon(int levelID) {
     CCNode* sprite = levelCell->getChildByID(Ids::CLOCK_SPRITE_ID);
     if (sprite) { sprite->runAction(fade); }
     //clockSprite->setVisible(false);
+
+    levelCell->release();
 }
 
 WeakRef<LevelCell> LevelSearch::getLevelCell(int levelID) {
@@ -104,11 +99,9 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
                 log::error("The request was cancelled... So sad :(");
             }
             
-            log::info("m_alreadyRan = false");
             m_alreadyRan = true;
+
             hideClockIcon(levelID);
-        } else {
-            log::info("m_alreadyRan = true");
         }
     });
 
