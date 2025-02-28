@@ -24,9 +24,9 @@ queueTimer() {
   }
 }
 
-// TempQueue is because if the level hasn't been checked yet, and you close the game, you will still be able to check if the level is friend only
-// If instead I was only relying on the queue, if the level was queued but while the mod is checking if the level is friend only, you won't be know if it was really friend only
-// at the end of day, because the request didn't finish
+TempQueue is because if the level hasn't been checked yet, and you close the game, you will still be able to check if the level is friend only
+If instead I was only relying on the queue, if the level was queued but while the mod is checking if the level is friend only, you won't be know if it was really friend only
+at the end of day, because the request didn't finish
 */
 
 QueueRequests* QueueRequests::get() {
@@ -37,10 +37,8 @@ QueueRequests* QueueRequests::get() {
 void QueueRequests::addLevelToQueue(LevelCell* levelCell) {
     // log::debug("LevelInfos::wasAlreadyQueued(levelCell->m_level) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelCell->m_level)));
     // log::debug("isQueued(levelCell->m_level) = {}", std::to_string(isQueued(levelCell->m_level)));
-    
-    //levelCell->retain();
 
-    if (levelCell->m_level && !(LevelInfos::wasAlreadyQueued(levelCell->m_level) || isQueued(levelCell->m_level))) {
+    if (levelCell->m_level && !(LevelInfos::wasAlreadyQueued(levelCell->m_level))) {
         m_queuedLevelList[levelCell->m_level->m_levelID] = WeakRef(levelCell); // benefit of this:
     } else {                                                                   // This will replace the old levelCell to a new one, which we will be able to apply a given CCAction fade
         log::info("Level {} won't be added to queue, as it's already in queue or was already in queue", levelCell->m_level->m_levelName);
@@ -48,9 +46,6 @@ void QueueRequests::addLevelToQueue(LevelCell* levelCell) {
 }
 
 void QueueRequests::addLevelToTempQueue(LevelCell* levelCell) {
-
-    //levelCell->retain();
-
     // log::debug("LevelInfos::wasAlreadyQueued(levelCell->m_level) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelCell->m_level)));
     // log::debug("isQueued(levelCell->m_level) = {}", std::to_string(isQueued(levelCell->m_level)));
 
@@ -109,6 +104,9 @@ void QueueRequests::startLoop() {
                     
                     auto lockedLevelList = getLockedQueuedLevelList();
                     LevelCell* levelCell = getLockedQueuedLevelList().at(0); // always get the first element
+
+                    levelCell->retain();
+
                     addLevelToTempQueue(levelCell);
                     if (!levelCell) {
                         log::info("LevelCell is nullptr !!!!!!! :(");
