@@ -24,3 +24,9 @@ void LevelCells::updateLevelCell(LevelCell* levelCell) {
         friendOnlySprite->setVisible(false);
     }
 }
+
+void Misc::log_debug(std::string s) {
+    if (Mod::get()->getSettingValue<bool>("show-debug-logs")) {
+        log::debug("{}", s);
+    }
+}

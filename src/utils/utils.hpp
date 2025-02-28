@@ -36,4 +36,6 @@ namespace Misc {
     
         return values;
     }
+
+    void log_debug(std::string s);
 }

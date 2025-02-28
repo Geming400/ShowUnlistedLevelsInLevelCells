@@ -26,13 +26,14 @@ public:
     void clearQueue();
     void clearTempQueue();
 
+    WeakRef<LevelCell> getLevelCellFromLevelID(int levelID, bool isTempQueue = false);
+
     std::vector<WeakRef<LevelCell>> getQueue();
     std::vector<WeakRef<LevelCell>> getTempQueue();
 
     void startLoop();
     void stopLoop();
 private:
-    bool isQueuedLevelsSuperiorToN(int n, bool isEqual);
     void saveInfosOfLevelsInArray(CCArray* levels);
 
     std::vector<LevelCell*> getLockedQueuedLevelList();

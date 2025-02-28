@@ -28,20 +28,20 @@ void LMD::loadLevelsFinished(CCArray* p0, char const* p1) {
 }
 */
 
-LevelSearch::LevelSearch(LevelCell* levelCell) {
-    m_levelCell = levelCell;
-}
-
-LevelSearch::LevelSearch(WeakRef<LevelCell> levelCell) {
-    m_levelCell = levelCell.lock();
-}
-
-void LevelSearch::hideClockIcon() {
-    Ref<LevelCell> levelCell = m_levelCell.lock();
+void LevelSearch::hideClockIcon(int levelID) {
+    WeakRef<LevelCell> _levelCell = getLevelCell(levelID);
+    if (QueueRequests::get()->getTempQueue().size() == 0) {
+        log::debug("empty");
+    }
+    if (!_levelCell) {
+        log::error("Level cell = nullptr");
+    }
+    Ref<LevelCell> levelCell = _levelCell.lock();
     if (!levelCell) { return; }
     LevelInfos::addQueuedLevel(levelCell->m_level);
 
     QueueRequests::get()->removeLevelFromTempQueue(levelCell);
+    log::debug("REMOVE FROM TEMP QUEUE");
     CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
 
     
@@ -51,10 +51,15 @@ void LevelSearch::hideClockIcon() {
     //clockSprite->setVisible(false);
 }
 
+WeakRef<LevelCell> LevelSearch::getLevelCell(int levelID) {
+    return QueueRequests::get()->getLevelCellFromLevelID(levelID, true);
+}
+
 void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
     web::WebRequest req = web::WebRequest();
     std::vector<GJGameLevel*> levels;
-    GJGameLevel* level = GJGameLevel::create();
+    std::string _levelID = searchObject->m_searchQuery;
+    int levelID = std::stoi(_levelID); // = _levelID to int
 
     /*matjson::Value json = matjson::Value();
     json.set("secret", LevelSearch::COMMON_SECRET); // add the common secret
@@ -64,7 +69,7 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
     // not including the GJP2 to be sure to not see unlisted + friends only levels
 
     std::string body = fmt::format("secret={}&type={}&str={}",
-        LevelSearch::COMMON_SECRET,
+        COMMON_SECRET,
         static_cast<int>(searchObject->m_searchType),
         searchObject->m_searchQuery);
 
@@ -76,12 +81,12 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
 
     req.timeout(std::chrono::seconds(5)); // set the timeout to 5 seconds
     
-    LevelCell* levelCell = m_levelCell.lock();
+    LevelCell* levelCell = getLevelCell(levelID).lock();
 
-    m_listener.bind([this, levelCell] (web::WebTask::Event* e) {
+    m_listener.bind([this, levelCell, levelID] (web::WebTask::Event* e) {
+        if (!m_alreadyRan) {
             if (web::WebResponse* res = e->getValue()) {
-                if (!res->ok()) { // original: res->ok()   |   for debug reasons
-                    // do stuff
+                if (res->ok()) { // original: res->ok()   |   for debug reasons
                     std::string resString = res->string().unwrapOr("-1");
                     
                     log::debug("resString = {}", resString);
@@ -98,8 +103,14 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
             } else if (e->isCancelled()) {
                 log::error("The request was cancelled... So sad :(");
             }
-            hideClockIcon();
-        });
+            
+            log::info("m_alreadyRan = false");
+            m_alreadyRan = true;
+            hideClockIcon(levelID);
+        } else {
+            log::info("m_alreadyRan = true");
+        }
+    });
 
-    m_listener.setFilter(req.post(LevelSearch::URL));
+    m_listener.setFilter(req.post(URL));
 }

@@ -8,19 +8,19 @@
 
 using namespace geode::prelude;
 
+const std::string COMMON_SECRET = "Wmfd2893gb7";
+const std::string URL = "http://www.boomlings.com/database/getGJLevels21.php";
+
 class LevelSearch {
 public:
-    LevelSearch(LevelCell* levelCell);
-    LevelSearch(WeakRef<LevelCell> levelCell);
-
     void getGJLevels21(GJSearchObject* searchObject);
 private:
-    void hideClockIcon();
+    void hideClockIcon(int levelID);
 
-    const std::string COMMON_SECRET = "Wmfd2893gb7";
-    const std::string URL = "http://www.boomlings.com/database/getGJLevels21.php";
+    WeakRef<LevelCell> getLevelCell(int levelID);
 
     EventListener<web::WebTask> m_listener;
 
-    WeakRef<LevelCell> m_levelCell = nullptr;
+    int m_levelID = 0;
+    bool m_alreadyRan = false;
 };
