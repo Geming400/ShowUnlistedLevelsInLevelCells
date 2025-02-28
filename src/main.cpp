@@ -273,29 +273,3 @@ class $modify(MyMenuLayer, MenuLayer) {
 		return true;
 	}
 };
-
-class $modify(MyLevelBrowserLayer, LevelBrowserLayer) {
-	bool init(GJSearchObject* p0) {
-		log::debug("LevelBrowserLayer::init()");
-		if (!LevelBrowserLayer::init(p0)) return false;
-		
-		CCArray* entries = CCArray::create();
-
-		if (m_list->m_listView) {
-			entries = m_list->m_listView->m_entries;
-			log::info("entries is not nullptr !");
-		} else {
-			log::warn("Whar. entries == nullptr");
-		}
-
-		for (size_t i = 0; i < entries->count(); i++)
-		{
-			auto element = typeinfo_cast<LevelCell*>(entries->objectAtIndex(i));
-			if (element) {
-				LevelCells::updateLevelCell(element);
-			}
-		}
-		
-		return true;
-	}
-};
