@@ -71,11 +71,9 @@ class $modify(MyLevelCell, LevelCell) {
 		for (size_t i = 0; i < allowedTypes.size(); i++)
 		{
 			if (searchType == allowedTypes.at(i)) {
-				log::info("Search type {} is allowed", static_cast<int>(searchType));
 				return true;
 			}
 		}
-		log::info("Search type {} is NOT allowed", static_cast<int>(searchType));
 		return false;
 	}
 
@@ -189,7 +187,7 @@ class $modify(MyLevelCell, LevelCell) {
 		// Adding the level in queue or something
 
 		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly) && !wasQueued(m_level)) {
-			log::debug("Adding {} to queue from main.cpp", m_level->m_levelName);
+			Misc::log_debug(fmt::format("Adding {} to queue from main.cpp", m_level->m_levelName));
 			QueueRequests::get()->addLevelToQueue(this);
 		}
 

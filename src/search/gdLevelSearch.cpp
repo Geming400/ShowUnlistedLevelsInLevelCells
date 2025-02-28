@@ -34,7 +34,6 @@ void LevelSearch::hideClockIcon(int levelID) {
     LevelInfos::addQueuedLevel(levelCell->m_level);
 
     QueueRequests::get()->removeLevelFromTempQueue(levelCell);
-    log::debug("REMOVE FROM TEMP QUEUE");
     CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
 
     
@@ -68,8 +67,6 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
         static_cast<int>(searchObject->m_searchType),
         searchObject->m_searchQuery);
 
-    log::warn("{}", body);
-
     req.bodyString(body);
     req.header("Content-Type", "application/x-www-form-urlencoded");
     req.userAgent("");
@@ -83,11 +80,9 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
             if (web::WebResponse* res = e->getValue()) {
                 if (res->ok()) { // original: res->ok()   |   for debug reasons
                     std::string resString = res->string().unwrapOr("-1");
-                    
-                    log::debug("resString = {}", resString);
 
                     if (resString == "-1") { // there's no level being found (aka the level is friends only)
-                        log::info("if (resString == -1)");
+                        Misc::log_debug("if (resString == -1)");
                         if (levelCell) {
                             LevelInfos::saveCustomLevelInfos(levelCell, true, true);
                         }
