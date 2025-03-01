@@ -24,7 +24,7 @@ add_library(${PROJECT_NAME} SHARED
 
     src/settings/resetCurrentQueue.cpp
     src/settings/resetSavedInfos.cpp
-    src/settings/killQueue.cpp
+    src/settings/stopQueue.cpp
     src/settings/onQueueRequestsTimingChange.cpp
 )
 
