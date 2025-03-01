@@ -53,7 +53,7 @@
 			"description": "This will queue the requests for finding if a level is unlisted or not. If disabled, the mod won't try to search for unlisted levels."
 		},
 		"queue-requests-timing": {
-			"type": "int",
+			"type": "float",
 			"default": 2,
 			"min": 1,
 			"max": 10,
@@ -62,7 +62,9 @@
 			"enable-if": "queue-requests",
 			"requires-restart": true,
 			"control": {
-				"slider": true
+				"slider": true,
+				"slider-step": 0.5,				
+				"input": true
 			}
 		},
 

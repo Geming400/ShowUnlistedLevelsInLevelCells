@@ -82,12 +82,11 @@ bool QueueRequests::isQueued(LevelCell* levelCell) {
 }
 
 void QueueRequests::startLoop() {
-    // page: 159
     if (!m_loopTaskID == 0 || !Mod::get()->getSettingValue<bool>("let-queue-start")) {
         return;
     }
 
-    auto loopInterval = Mod::get()->getSettingValue<int64_t>("queue-requests-timing");
+    auto loopInterval = Mod::get()->getSettingValue<double>("queue-requests-timing");
     auto recurringTask = std::make_unique<RecurringTask>(
         [this]() { // add 'this' in the capture list
             if (Mod::get()->getSettingValue<bool>("queue-requests")) { // also putting this in case the user turn off this feature while the loop is running
@@ -125,7 +124,7 @@ void QueueRequests::startLoop() {
                 }
             }
         },
-        std::chrono::seconds(loopInterval) // The interval is defined by the user
+        std::chrono::milliseconds(static_cast<int64_t>(loopInterval * 1000)) // The interval is defined by the user
     );
 
     m_loopTaskID = recurringTask->k_task_id;
