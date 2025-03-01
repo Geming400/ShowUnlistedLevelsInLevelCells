@@ -1,6 +1,6 @@
-#include "level/LevelInfos.hpp"
-#include "queue/QueueRequests.hpp"
-#include "utils/utils.hpp"
+#include "./level/LevelInfos.hpp"
+#include "./queue/QueueRequests.hpp"
+#include "./utils/utils.hpp"
 
 #include <Geode/Geode.hpp>
 #include <Geode/modify/LevelCell.hpp>

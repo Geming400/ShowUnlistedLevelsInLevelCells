@@ -1,4 +1,4 @@
-#include "levelInfos.hpp"
+#include "./levelInfos.hpp"
 #include "../utils/utils.hpp"
 
 const std::string EMPTY_ARRAY = matjson::Value::array().dump(matjson::NO_INDENTATION);

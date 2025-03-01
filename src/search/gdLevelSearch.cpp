@@ -1,4 +1,4 @@
-#include "gdLevelSearch.hpp"
+#include "./gdLevelSearch.hpp"
 #include "../level/levelInfos.hpp"
 #include "../utils/utils.hpp"
 
