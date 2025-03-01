@@ -1,5 +1,5 @@
-#include "./level/LevelInfos.hpp"
-#include "./queue/QueueRequests.hpp"
+#include "./level/levelInfos.hpp"
+#include "./queue/queueRequests.hpp"
 #include "./utils/utils.hpp"
 
 #include <Geode/Geode.hpp>

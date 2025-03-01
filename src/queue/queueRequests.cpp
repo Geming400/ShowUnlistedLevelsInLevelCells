@@ -82,7 +82,7 @@ bool QueueRequests::isQueued(LevelCell* levelCell) {
 }
 
 void QueueRequests::startLoop() {
-    if (!m_loopTaskID == 0 || !Mod::get()->getSettingValue<bool>("let-queue-start")) {
+    if ((!m_loopTaskID == 0) || !Mod::get()->getSettingValue<bool>("let-queue-start")) {
         return;
     }
 
