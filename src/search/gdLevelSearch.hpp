@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../level/levelClass.hpp"
 #include "../queue/queueRequests.hpp"
 
 #include <Geode/Geode.hpp>

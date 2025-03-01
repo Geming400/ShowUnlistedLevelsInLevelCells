@@ -13,9 +13,6 @@ add_library(${PROJECT_NAME} SHARED
     src/level/levelInfos.hpp
     src/level/levelInfos.cpp
 
-    src/level/levelClass.hpp
-    src/level/levelClass.cpp
-
     src/queue/queueRequests.hpp
     src/queue/queueRequests.cpp
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../include/TaskScheduler.hpp"
-#include "../level/levelClass.hpp"
 
 #include <Geode/Geode.hpp>
 
