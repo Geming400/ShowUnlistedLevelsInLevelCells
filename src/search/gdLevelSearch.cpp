@@ -75,28 +75,35 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
     LevelCell* levelCell = getLevelCell(levelID).lock();
 
     m_listener.bind([this, levelCell, levelID] (web::WebTask::Event* e) {
-        if (!m_alreadyRan) {
-            if (web::WebResponse* res = e->getValue()) {
-                if (res->ok()) { // original: res->ok()   |   for debug reasons
-                    std::string resString = res->string().unwrapOr("-1");
+        if (web::WebResponse* res = e->getValue()) {
+            if (res->ok()) {
+                std::string resString = res->string().unwrapOr("-1");
+                
+                log::debug("resString = {}", resString);
 
-                    if (resString == "-1") { // there's no level being found (aka the level is friends only)
-                        Misc::log_debug("if (resString == -1)");
+                if (LevelCells::isUnlistedOrFriendsOnly(resString)) {
+                    if (LevelCells::isFriendsOnly(resString)) {
+                        Misc::log_debug("Level is friends only");
                         if (levelCell) {
                             LevelInfos::saveCustomLevelInfos(levelCell, true, true);
                         }
+                    } else {
+                        Misc::log_debug("Level is unlisted");
+                        if (levelCell) {
+                            LevelInfos::saveCustomLevelInfos(levelCell, true, false);
+                        }
                     }
-                } else {
-                    log::error("Request code is not 2xx"); // = no internet (probably) (robtop's servers dosen't return an actual status code by themselves) or the request failed (somehow :broken_hearth:)
                 }
-            } else if (e->isCancelled()) {
-                log::error("The request was cancelled... So sad :(");
+            } else {
+                log::error("Request code is not 2xx and is {}", res->code()); // = no internet (probably) (robtop's servers dosen't return an actual status code by themselves) or the request failed (somehow :broken_hearth:)
             }
-            
-            m_alreadyRan = true;
-
-            hideClockIcon(levelID);
+        } else if (e->isCancelled()) {
+            log::error("The request was cancelled... So sad :(");
+        } else if (e->getProgress()) {
+            return;
         }
+
+        hideClockIcon(levelID);
     });
 
     m_listener.setFilter(req.post(URL));
