@@ -41,7 +41,7 @@ void QueueRequests::addLevelToQueue(LevelCell* levelCell) {
     if (levelCell->m_level && !(LevelInfos::wasAlreadyQueued(levelCell->m_level))) {
         m_queuedLevelList[levelCell->m_level->m_levelID] = WeakRef(levelCell); // benefit of this:
     } else {                                                                   // This will replace the old levelCell to a new one, which we will be able to apply a given CCAction fade
-        Misc::log_debug(fmt::format("Level {} won't be added to queue, as it's already in queue or was already in queue", levelCell->m_level->m_levelName));
+        Misc::log_debug(fmt::format("Level {} won't be added to queue, as it was already in queue", levelCell->m_level->m_levelName));
     }
 }
 
@@ -49,11 +49,9 @@ void QueueRequests::addLevelToTempQueue(LevelCell* levelCell) {
     // log::debug("LevelInfos::wasAlreadyQueued(levelCell->m_level) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelCell->m_level)));
     // log::debug("isQueued(levelCell->m_level) = {}", std::to_string(isQueued(levelCell->m_level)));
 
-    if (levelCell->m_level && !isQueuedInTempQueue(levelCell->m_level)) {
+    if (levelCell->m_level) {
         m_tempQueuedLevelList[levelCell->m_level->m_levelID] = WeakRef(levelCell); // benefit of this:
-    } else {                                                                       // This will replace the old levelCell to a new one, which we will be able to apply a given CCAction fade
-        Misc::log_debug(fmt::format("Level {} won't be added to the temp queue because the level is already in the temp queue", levelCell->m_level->m_levelName));
-    }
+    }                                                                              // This will replace the old levelCell to a new one, which we will be able to apply a given CCAction fade
 }
 
 void QueueRequests::removeLevelFromQueue(LevelCell* levelCell) {
