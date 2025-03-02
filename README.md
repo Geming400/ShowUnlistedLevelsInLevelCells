@@ -43,3 +43,5 @@ If you have any issue understanding what I did, be sure to dm on discord (linked
 - Use `CCArray`s when possible instead of `std::vector`s.
 - Make a mod icon
 - Maybe fix android build issues
+- Make that requests are qued based on their ids or something
+- Fix the previews' images inconcistency
