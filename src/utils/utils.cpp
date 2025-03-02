@@ -25,8 +25,43 @@ void LevelCells::updateLevelCell(LevelCell* levelCell) {
     }
 }
 
+bool LevelCells::isUnlistedOrFriendsOnly(std::string levelResponse) {
+    std::map<std::string, std::string> mappedResponse = Misc::gdStringResponseToMap(levelResponse, ":");
+
+    std::vector<std::string> key35 = geode::utils::string::split(mappedResponse["35"], "#"); // see https://wyliemaster.github.io/gddocs/#/resources/client/level (k35)
+    return key35.at(0) == "0";
+}
+
+bool LevelCells::isFriendsOnly(std::string levelResponse) {
+    if (!isUnlistedOrFriendsOnly(levelResponse)) {
+        return Misc::gdStringResponseToMap(levelResponse, ":").contains("4"); // level string key is 4
+    } else {
+        return false;
+    }
+}
+
 void Misc::log_debug(std::string s) {
     if (Mod::get()->getSettingValue<bool>("show-debug-logs")) {
         log::debug("{}", s);
     }
+}
+
+bool Misc::isEven(int n) {
+    return n % 2 == 0;
+}
+
+std::map<std::string, std::string> Misc::gdStringResponseToMap(std::string res, std::string sep){
+    std::vector<std::string> splittedRes = geode::utils::string::split(res, sep);
+
+    std::map<std::string, std::string> finalMap;
+
+    for (size_t i = 0; i < splittedRes.size(); i = i+2)
+    {
+        std::string key = splittedRes.at(i);
+        std::string value = splittedRes.at(i + 1);
+
+        finalMap[key] = value;
+    }
+    
+    return finalMap;
 }

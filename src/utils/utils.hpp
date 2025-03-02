@@ -25,6 +25,9 @@ namespace Ids {
 
 namespace LevelCells {
     void updateLevelCell(LevelCell* levelCell);
+
+    bool isUnlistedOrFriendsOnly(std::string levelResponse);
+    bool isFriendsOnly(std::string levelResponse);
 }
 
 namespace Misc {
@@ -36,6 +39,10 @@ namespace Misc {
     
         return values;
     }
+
+    bool isEven(int n);
+
+    std::map<std::string, std::string> gdStringResponseToMap(std::string res, std::string sep);
 
     void log_debug(std::string s);
 }
