@@ -25,18 +25,14 @@ void LevelCells::updateLevelCell(LevelCell* levelCell) {
     }
 }
 
-bool LevelCells::isUnlistedOrFriendsOnly(std::string levelResponse) {
-    std::map<std::string, std::string> mappedResponse = Misc::gdStringResponseToMap(levelResponse, ":");
-
-    std::vector<std::string> key35 = geode::utils::string::split(mappedResponse["35"], "#"); // see https://wyliemaster.github.io/gddocs/#/resources/client/level (k35)
-    return key35.at(0) == "0";
-}
-
 bool LevelCells::isFriendsOnly(std::string levelResponse) {
-    if (!isUnlistedOrFriendsOnly(levelResponse)) {
-        return Misc::gdStringResponseToMap(levelResponse, ":").contains("4"); // level string key is 4
-    } else {
-        return false;
+    if (levelResponse == "-1") {
+        return true;
+    } else { // the code below is because of ip stuff (read https://discord.com/channels/911701438269386882/979402752121765898/1346204609730842665)
+        std::map<std::string, std::string> mappedResponse = Misc::gdStringResponseToMap(levelResponse, ":");
+
+        std::vector<std::string> key35 = geode::utils::string::split(mappedResponse["35"], "#"); // see https://wyliemaster.github.io/gddocs/#/resources/client/level (k35)
+        return key35.at(0) == "0";
     }
 }
 

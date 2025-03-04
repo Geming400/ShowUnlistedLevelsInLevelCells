@@ -26,7 +26,6 @@ namespace Ids {
 namespace LevelCells {
     void updateLevelCell(LevelCell* levelCell);
 
-    bool isUnlistedOrFriendsOnly(std::string levelResponse);
     bool isFriendsOnly(std::string levelResponse);
 }
 

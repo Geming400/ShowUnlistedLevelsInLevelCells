@@ -81,17 +81,10 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
                 
                 log::debug("resString = {}", resString);
 
-                if (LevelCells::isUnlistedOrFriendsOnly(resString)) {
-                    if (LevelCells::isFriendsOnly(resString)) {
-                        Misc::log_debug("Level is friends only");
-                        if (levelCell) {
-                            LevelInfos::saveCustomLevelInfos(levelCell, true, true);
-                        }
-                    } else {
-                        Misc::log_debug("Level is unlisted");
-                        if (levelCell) {
-                            LevelInfos::saveCustomLevelInfos(levelCell, true, false);
-                        }
+                if (LevelCells::isFriendsOnly(resString)) {
+                    Misc::log_debug("Level is friends only");
+                    if (levelCell) {
+                        LevelInfos::saveCustomLevelInfos(levelCell, true, true);
                     }
                 }
             } else {
