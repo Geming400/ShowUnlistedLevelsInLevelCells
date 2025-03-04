@@ -42,10 +42,6 @@ void Misc::log_debug(std::string s) {
     }
 }
 
-bool Misc::isEven(int n) {
-    return n % 2 == 0;
-}
-
 std::map<std::string, std::string> Misc::gdStringResponseToMap(std::string res, std::string sep){
     std::vector<std::string> splittedRes = geode::utils::string::split(res, sep);
 
