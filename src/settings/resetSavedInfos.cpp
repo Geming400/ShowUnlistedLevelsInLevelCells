@@ -98,7 +98,7 @@ protected:
         LevelInfos::clearAlreadyQueuedLevels();
         LevelInfos::clearFriendOnlyLevels();
         LevelInfos::clearUnlistedLevels();
-        Notification::create("Successfully reseted saved infos ! Changes will apply on game restart", NotificationIcon::Success)->show();
+        Notification::create("Successfully reseted saved infos !", NotificationIcon::Success)->show();
         log::info("Successfully reseted saved infos !");
     }
 
