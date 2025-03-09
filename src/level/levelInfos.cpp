@@ -34,11 +34,6 @@ bool LevelInfos::isUnlisted(GJGameLevel* level) {
 bool LevelInfos::isUnlisted(int levelID) {
 	matjson::Value unlistedLevels = LevelInfos::getUnlistedLevels();
 
-	if (isUnlisted(levelID)) {
-		Misc::log_debug(fmt::format("level with ID {} is already in the '{}' array", levelID, unlistedLevelsKey));
-		return false;
-	}
-
 	for (size_t i = 0; i < unlistedLevels.size(); i++) // iterate trought each unlisted levels
 	{
 		int UnlistedlevelID = unlistedLevels.get<int>(i).unwrapOr(DEFAULT_NO_LEVEL_ID); // get the level id
@@ -88,7 +83,7 @@ auto LevelInfos::getFriendOnlyLevels() {
 bool LevelInfos::isFriendOnly(GJGameLevel* level) {
 	int levelID = level->m_levelID;
 
-	isFriendOnly(levelID);
+	return isFriendOnly(levelID);
 }
 
 bool LevelInfos::isFriendOnly(int levelID) {
@@ -144,7 +139,7 @@ auto LevelInfos::getAlreadyQueuedLevels() {
 bool LevelInfos::wasAlreadyQueued(GJGameLevel* level) {
 	int levelID = level->m_levelID;
 
-	wasAlreadyQueued(levelID);
+	return wasAlreadyQueued(levelID);
 }
 
 bool LevelInfos::wasAlreadyQueued(int levelID) {
