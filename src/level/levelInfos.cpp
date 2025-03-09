@@ -36,7 +36,7 @@ bool LevelInfos::isUnlisted(int levelID) {
 
 	if (isUnlisted(levelID)) {
 		Misc::log_debug(fmt::format("level with ID {} is already in the '{}' array", levelID, unlistedLevelsKey));
-		return;
+		return false;
 	}
 
 	for (size_t i = 0; i < unlistedLevels.size(); i++) // iterate trought each unlisted levels
