@@ -62,6 +62,9 @@ void QueueRequests::removeLevelFromTempQueue(LevelCell* levelCell) {
     m_tempQueuedLevelList.erase(levelCell->m_level->m_levelID);
 }
 
+void QueueRequests::removeLevelFromTempQueue(int levelID) {
+    m_tempQueuedLevelList.erase(levelID);
+}
 
 bool QueueRequests::isQueuedInTempQueue(GJGameLevel* level) {
     return m_tempQueuedLevelList.contains(level->m_levelID);
@@ -107,13 +110,13 @@ void QueueRequests::startLoop() {
                     if (!levelCell) {
                         log::error("LevelCell is nullptr !!!!!!! :(");
                     }
-                    auto levelSearch = new LevelSearch();
+                    LevelSearch levelSearch;
 
                     GJGameLevel* level = levelCell->m_level;
                     log::info("Queued {}", level->m_levelName);
 
                     GJSearchObject* searchObject = GJSearchObject::create(SearchType::Search, std::to_string(level->m_levelID));
-                    levelSearch->getGJLevels21(searchObject); // search for the level id
+                    levelSearch.getGJLevels21(searchObject); // search for the level id
 
                     m_queuedLevelList.erase(level->m_levelID); // remove the first element in the vector
                     if (!m_queuedLevelList.contains(level->m_levelID)) {

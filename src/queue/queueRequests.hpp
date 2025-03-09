@@ -15,6 +15,7 @@ public:
 
     void removeLevelFromQueue(LevelCell* levelCell);
     void removeLevelFromTempQueue(LevelCell* levelCell);
+    void removeLevelFromTempQueue(int levelID);
 
     bool isQueuedInTempQueue(GJGameLevel* level);
     bool isQueuedInTempQueue(LevelCell* levelCell);
