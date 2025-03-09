@@ -101,12 +101,14 @@ void QueueRequests::startLoop() {
 
                     // gameLevelManager->m_levelManagerDelegate = levelManagerDelegate;
                     
-                    auto lockedLevelList = getLockedQueuedLevelList();
                     LevelCell* levelCell = getLockedQueuedLevelList().at(0); // always get the first element
-
-                    levelCell->retain();
-
-                    addLevelToTempQueue(levelCell);
+                    int levelID = getKeysFromQueuedLevels().at(0);
+                    
+                    if (levelCell) {
+                        levelCell->retain();
+                        addLevelToTempQueue(levelCell);
+                    }
+                    
                     if (!levelCell) {
                         log::error("LevelCell is nullptr !!!!!!! :(");
                     }
@@ -115,12 +117,16 @@ void QueueRequests::startLoop() {
                     GJGameLevel* level = levelCell->m_level;
                     log::info("Queued {}", level->m_levelName);
 
-                    GJSearchObject* searchObject = GJSearchObject::create(SearchType::Search, std::to_string(level->m_levelID));
+                    GJSearchObject* searchObject = GJSearchObject::create(SearchType::Search, std::to_string(levelID));
                     levelSearch.getGJLevels21(searchObject); // search for the level id
 
-                    m_queuedLevelList.erase(level->m_levelID); // remove the first element in the vector
-                    if (!m_queuedLevelList.contains(level->m_levelID)) {
-                        log::info("Removed {} from queue", level->m_levelName);
+                    m_queuedLevelList.erase(levelID); // remove the first element in the vector
+                    if (!m_queuedLevelList.contains(levelID)) {
+                        if (levelCell) {
+                            log::info("Removed {} from queue", level->m_levelName);
+                        } else {
+                            log::info("Removed level with ID {} from queue", levelID);
+                        }
                     }
                 }
             }
@@ -139,29 +145,46 @@ void QueueRequests::stopLoop() {
 }
 
 std::vector<LevelCell*> QueueRequests::getLockedQueuedLevelList() {
-    std::vector<LevelCell*> finalVector;
+    std::vector<LevelCell*> values;
 
     auto queue = getQueue();
 
     for (size_t i = 0; i < queue.size(); i++)
     {
-        finalVector.push_back(queue.at(i).lock());
+        values.push_back(queue.at(i).lock());
     }
     
-    return finalVector;
+    return values;
 }
 
+std::vector<int> QueueRequests::getKeysFromQueuedLevels() {
+    std::vector<int> keys;
+
+    for (auto [k, v] : m_queuedLevelList) { keys.push_back(k); }
+    
+    return keys;
+}
+
+
 std::vector<LevelCell*> QueueRequests::getLockedTempQueuedLevelList() {
-    std::vector<LevelCell*> finalVector;
+    std::vector<LevelCell*> values;
 
     auto queue = getTempQueue();
 
     for (size_t i = 0; i < queue.size(); i++)
     {
-        finalVector.push_back(queue.at(i).lock());
+        values.push_back(queue.at(i).lock());
     }
     
-    return finalVector;
+    return values;
+}
+
+std::vector<int> QueueRequests::getKeysFromTempQueuedLevels() {
+    std::vector<int> keys;
+
+    for (auto [k, v] : m_tempQueuedLevelList) { keys.push_back(k); }
+    
+    return keys;
 }
 
 void QueueRequests::clearQueue() {
@@ -180,7 +203,7 @@ std::vector<WeakRef<LevelCell>> QueueRequests::getTempQueue() {
     return Misc::getValuesFromMap<int, WeakRef<LevelCell>>(m_tempQueuedLevelList);
 }
 
-void print_map(std::map<int, WeakRef<LevelCell>>const &m) {
+void print_map(std::map<int, WeakRef<LevelCell>> const &m) {
     log::info("------------");
     for (auto const &pair: m) {
         if (pair.second.valid()) {

@@ -42,7 +42,6 @@ void LevelSearch::hideClockIcon(int levelID) {
         levelCell->release();
     } else {
         LevelInfos::addQueuedLevel(levelID);
-        QueueRequests::get()->removeLevelFromTempQueue(levelID);
     }
 }
 
