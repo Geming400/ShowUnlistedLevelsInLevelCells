@@ -36,6 +36,7 @@ jobs:
         uses: geode-sdk/build-geode-mod@main
         with:
           bindings: geode-sdk/bindings
+          build-config: RelWithDebInfo
           bindings-ref: main
           combine: true
           target: ${{ matrix.config.target }}
