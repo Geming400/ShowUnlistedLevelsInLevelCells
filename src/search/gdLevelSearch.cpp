@@ -30,19 +30,20 @@ void LMD::loadLevelsFinished(CCArray* p0, char const* p1) {
 
 void LevelSearch::hideClockIcon(int levelID) {
     Ref<LevelCell> levelCell = getLevelCell(levelID).lock();
-    if (!levelCell) { return; }
-    LevelInfos::addQueuedLevel(levelCell->m_level);
+    if (levelCell) {
+        LevelInfos::addQueuedLevel(levelCell->m_level);
+        QueueRequests::get()->removeLevelFromTempQueue(levelCell);
+        CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
 
-    QueueRequests::get()->removeLevelFromTempQueue(levelCell);
-    CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
-
+        CCNode* sprite = levelCell->getChildByID(Ids::CLOCK_SPRITE_ID);
+        if (sprite) { sprite->runAction(fade); }
+        //clockSprite->setVisible(false);
     
-
-    CCNode* sprite = levelCell->getChildByID(Ids::CLOCK_SPRITE_ID);
-    if (sprite) { sprite->runAction(fade); }
-    //clockSprite->setVisible(false);
-
-    levelCell->release();
+        levelCell->release();
+    } else {
+        LevelInfos::addQueuedLevel(levelID);
+        QueueRequests::get()->removeLevelFromTempQueue(levelID);
+    }
 }
 
 WeakRef<LevelCell> LevelSearch::getLevelCell(int levelID) {
