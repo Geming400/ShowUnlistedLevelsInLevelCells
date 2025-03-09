@@ -66,14 +66,14 @@ class $modify(MyLevelCell, LevelCell) {
 		CCSprite* m_clockSprite;
 	};
 
-	bool isSearchTypeAllowed(SearchType searchType) {
+	bool isSearchTypeAllowed(SearchType searchType) const {
 		return allowedTypes.contains(searchType);
 	}
 
 	/*
 	This will get the search type from a GJSearchObject from the fifth parent (yes I could have hooked LevelBrowserLayer but whatever)
 	*/
-	bool isSearchTypeAllowed() {
+	bool isSearchTypeAllowed() const {
 		if (LevelInfos::isLevelDaily(m_level)) {
 			log::info("Search type for daily levels is not allowed");
 			return false;
@@ -196,11 +196,11 @@ class $modify(MyLevelCell, LevelCell) {
 
 // getting all of the local levels to check if they are unlisted or not
 class $modify(MyMenuLayer, MenuLayer) {
-	bool hasLocalLevelsBeenChecked() {
+	bool hasLocalLevelsBeenChecked() const {
 		return Mod::get()->getSavedValue<bool>("has-local-levels-been-checked", false);
 	}
 
-	void localLevelsHasBeenChecked() {
+	void localLevelsHasBeenChecked() const {
 		Mod::get()->setSavedValue("has-local-levels-been-checked", true);
 	}
 
