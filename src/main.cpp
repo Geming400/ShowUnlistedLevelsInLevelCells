@@ -15,7 +15,7 @@ using namespace geode::prelude;
 const CCPoint firstPos = {340, 10}; // the first pos, aka it's on the left side
 const CCPoint secondPos = {325, 10}; // the second pos, aka it's on the left side but a little bit less
 
-const std::unordered_set<SearchType> allowedTypes = {
+const std::unordered_set<SearchType> allowedTypes = { // TODO: Try implemeting that in the future
 	SearchType::Downloaded,
 	SearchType::FavouriteLevels,
 	SearchType::MyLevels,
