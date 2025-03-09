@@ -14,6 +14,10 @@ void addLevelToQueue(GJGameLevel* level) {
 	}
 }
 
+void addLevelToQueue(int levelID) {
+	LevelInfos::addQueuedLevel(levelID);
+}
+
 // unlisted levels
 
 
@@ -24,9 +28,16 @@ auto LevelInfos::getUnlistedLevels() {
 }
 
 bool LevelInfos::isUnlisted(GJGameLevel* level) {
-	int levelID = level->m_levelID;
-	
+	return isUnlisted(level->m_levelID);
+}
+
+bool LevelInfos::isUnlisted(int levelID) {
 	matjson::Value unlistedLevels = LevelInfos::getUnlistedLevels();
+
+	if (isUnlisted(levelID)) {
+		Misc::log_debug(fmt::format("level with ID {} is already in the '{}' array", levelID, unlistedLevelsKey));
+		return;
+	}
 
 	for (size_t i = 0; i < unlistedLevels.size(); i++) // iterate trought each unlisted levels
 	{
@@ -41,15 +52,17 @@ bool LevelInfos::isUnlisted(GJGameLevel* level) {
 }
 
 void LevelInfos::addUnlistedLevel(GJGameLevel* level) {
-	addLevelToQueue(level);
+	addUnlistedLevel(level->m_levelID);
+}
+
+void LevelInfos::addUnlistedLevel(int levelID) {
+	addLevelToQueue(levelID);
 
 	// if the level is already unlisted, don't add it to the unlisted level array
-	if (isUnlisted(level)) {
-		Misc::log_debug(fmt::format("level {} is already in the '{}' array", level->m_levelName, unlistedLevelsKey));
+	if (isUnlisted(levelID)) {
+		Misc::log_debug(fmt::format("Level with ID {} is already in the '{}' array", levelID, unlistedLevelsKey));
 		return;
 	}
-
-	int levelID = level->m_levelID;
 
 	Misc::log_debug(fmt::format("Refreshing the '{}' level array", unlistedLevelsKey));
 
@@ -75,6 +88,10 @@ auto LevelInfos::getFriendOnlyLevels() {
 bool LevelInfos::isFriendOnly(GJGameLevel* level) {
 	int levelID = level->m_levelID;
 
+	isFriendOnly(levelID);
+}
+
+bool LevelInfos::isFriendOnly(int levelID) {
 	matjson::Value unlistedLevels = getFriendOnlyLevels();
 
 	for (size_t i = 0; i < unlistedLevels.size(); i++) // iterate trought each friend only levels
@@ -90,18 +107,22 @@ bool LevelInfos::isFriendOnly(GJGameLevel* level) {
 }
 
 void LevelInfos::addFriendOnlyLevel(GJGameLevel* level) {
-	addLevelToQueue(level);
+	addFriendOnlyLevel(level->m_levelID);
+}
+
+void LevelInfos::addFriendOnlyLevel(int levelID) {
+	addLevelToQueue(levelID);
 	
 	// if the level is already unlisted, don't add it to the unlisted level array
-	if (LevelInfos::isFriendOnly(level)) {
-		Misc::log_debug(fmt::format("level {} is already in the '{}' array", level->m_levelName, friendOnlyLevelsKey));
+	if (LevelInfos::isFriendOnly(levelID)) {
+		Misc::log_debug(fmt::format("level with ID {} is already in the '{}' array", levelID, friendOnlyLevelsKey));
 		return;
 	}
 
 	Misc::log_debug(fmt::format("Refreshing the '{}' level array", friendOnlyLevelsKey));
 
 	matjson::Value friendOnlyLevels = getFriendOnlyLevels();
-	friendOnlyLevels.push(level->m_levelID.value());
+	friendOnlyLevels.push(levelID);
 
 	Mod::get()->setSavedValue<std::string>(friendOnlyLevelsKey, friendOnlyLevels.dump());
 }
@@ -123,6 +144,10 @@ auto LevelInfos::getAlreadyQueuedLevels() {
 bool LevelInfos::wasAlreadyQueued(GJGameLevel* level) {
 	int levelID = level->m_levelID;
 
+	wasAlreadyQueued(levelID);
+}
+
+bool LevelInfos::wasAlreadyQueued(int levelID) {
 	matjson::Value queuedLevels = getAlreadyQueuedLevels();
 
 	for (size_t i = 0; i < queuedLevels.size(); i++) // iterate trought each queued only levels
@@ -138,16 +163,20 @@ bool LevelInfos::wasAlreadyQueued(GJGameLevel* level) {
 }
 
 void LevelInfos::addQueuedLevel(GJGameLevel* level) {
+	addQueuedLevel(level->m_levelID);
+}
+
+void LevelInfos::addQueuedLevel(int levelID) {
 	// if the level is already queued, don't add it to the queued level array
-	if (LevelInfos::wasAlreadyQueued(level)) {
-		Misc::log_debug(fmt::format("level {} is already in the '{}' array", level->m_levelName, queuedLevelsKey));
+	if (LevelInfos::wasAlreadyQueued(levelID)) {
+		Misc::log_debug(fmt::format("level with ID {} is already in the '{}' array", levelID, queuedLevelsKey));
 		return;
 	}
 
 	Misc::log_debug(fmt::format("Refreshing the '{}' level array", queuedLevelsKey));
 
 	auto queuedLevels = getAlreadyQueuedLevels();
-	queuedLevels.push(level->m_levelID.value());
+	queuedLevels.push(levelID);
 
 	Mod::get()->setSavedValue<std::string>(queuedLevelsKey, queuedLevels.dump());
 }
