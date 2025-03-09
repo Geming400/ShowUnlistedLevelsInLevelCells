@@ -86,6 +86,8 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
                     Misc::log_debug("Level is friends only");
                     if (levelCell) {
                         LevelInfos::saveCustomLevelInfos(levelCell, true, true);
+                    } else {
+                        LevelInfos::saveCustomLevelInfos(levelID, true, true);
                     }
                 }
             } else {

@@ -207,13 +207,28 @@ This function is like saveLevelInfos except it won't see the content of level->m
 It's the mod that defines if the level is unlisted or friend only
 */
 void LevelInfos::saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly) {
-	Misc::log_debug("saveCustomLevelInfos");
+	Misc::log_debug("LevelInfos::saveCustomLevelInfos()");
 	if (isUnlisted) {
 		addUnlistedLevel(level);
 	}
 
 	if (isFriendOnly) {
 		addFriendOnlyLevel(level);
+	}
+}
+
+/*
+This function is like saveLevelInfos except it won't see the content of level->m_unlisted and level->m_friendsOnly
+It's the mod that defines if the level is unlisted or friend only
+*/
+void LevelInfos::saveCustomLevelInfos(int levelID, bool isUnlisted, bool isFriendOnly) {
+	Misc::log_debug("LevelInfos::saveCustomLevelInfos()");
+	if (isUnlisted) {
+		addUnlistedLevel(levelID);
+	}
+
+	if (isFriendOnly) {
+		addFriendOnlyLevel(levelID);
 	}
 }
 
