@@ -37,7 +37,10 @@ private:
     void saveInfosOfLevelsInArray(CCArray* levels);
 
     std::vector<LevelCell*> getLockedQueuedLevelList();
+    std::vector<int> getKeysFromQueuedLevels();
+
     std::vector<LevelCell*> getLockedTempQueuedLevelList();
+    std::vector<int> getKeysFromTempQueuedLevels();
 
     //std::vector<WeakRef<LevelCell>> m_queuedLevelList;
     //std::vector<WeakRef<LevelCell>> m_tempQueuedLevelList;
