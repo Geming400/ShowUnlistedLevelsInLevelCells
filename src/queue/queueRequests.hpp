@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../include/TaskScheduler.hpp"
+//#include "../include/TaskScheduler.hpp"
+#include "../include/NewTaskScheduler.hpp"
 
 #include <Geode/Geode.hpp>
 
@@ -48,7 +49,8 @@ private:
     std::map<int, WeakRef<LevelCell>> m_queuedLevelList;
     std::map<int, WeakRef<LevelCell>> m_tempQueuedLevelList;
 
-    TaskScheduler m_scheduler = TaskScheduler(1); // 1 thread
+    // TaskScheduler m_scheduler = TaskScheduler(1); // 1 thread
+    ULILCTaskScheduler::NewTaskScheduler m_scheduler;
     int m_loopTaskID = 0;
 
     // Singleton thingy :

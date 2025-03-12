@@ -88,19 +88,13 @@ void QueueRequests::startLoop() {
     }
 
     auto loopInterval = Mod::get()->getSettingValue<double>("queue-requests-timing");
-    auto recurringTask = std::make_unique<RecurringTask>(
+    auto recurringTask = new ULILCTaskScheduler::Task(
         [this]() { // add 'this' in the capture list
             if (Mod::get()->getSettingValue<bool>("queue-requests")) { // also putting this in case the user turn off this feature while the loop is running
                 // log::debug("isQueuedLevelsSuperiorToN() = {}", std::to_string(isQueuedLevelsSuperiorToN(0, false)));
                 Misc::log_debug(fmt::format("queuedLevelList.size() = {}", std::to_string(getQueue().size())));
 
-                if (m_queuedLevelList.size() > 0) {
-                    // LMD* levelManagerDelegate = new LMD();
-                    // GameLevelManager* gameLevelManager = GameLevelManager::sharedState();
-                    // levelManagerDelegate->originalDelegate = gameLevelManager->m_levelManagerDelegate;
-
-                    // gameLevelManager->m_levelManagerDelegate = levelManagerDelegate;
-                    
+                if (m_queuedLevelList.size() > 0) {                   
                     LevelCell* levelCell = getLockedQueuedLevelList().at(0); // always get the first element
                     int levelID = getKeysFromQueuedLevels().at(0);
                     
@@ -131,16 +125,17 @@ void QueueRequests::startLoop() {
                 }
             }
         },
-        std::chrono::milliseconds(static_cast<int64_t>(loopInterval * 1000)) // The interval is defined by the user
+        std::chrono::milliseconds(static_cast<int64_t>(loopInterval * 1000)), // The interval is defined by the user
+        1
     );
 
-    m_loopTaskID = recurringTask->k_task_id;
+    m_loopTaskID = recurringTask->getID();
 
-    m_scheduler.addTask(std::move(recurringTask));
+    m_scheduler.addTask(recurringTask);
 }
 
 void QueueRequests::stopLoop() {
-    m_scheduler.stopTask(m_loopTaskID);
+    m_scheduler.getTask(m_loopTaskID)->stop();
     m_loopTaskID = 0;
 }
 
