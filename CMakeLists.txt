@@ -10,22 +10,20 @@ project(ShowUnlistedLevelsInLevelCells VERSION 1.0.0)
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
     
-    src/level/levelInfos.hpp
     src/level/levelInfos.cpp
 
-    src/queue/queueRequests.hpp
     src/queue/queueRequests.cpp
 
-    src/search/gdLevelSearch.hpp
     src/search/gdLevelSearch.cpp
 
-    src/utils/utils.hpp
     src/utils/utils.cpp
 
     src/settings/resetCurrentQueue.cpp
     src/settings/resetSavedInfos.cpp
     src/settings/stopQueue.cpp
     src/settings/onQueueRequestsTimingChange.cpp
+
+    src/include/NewTaskScheduler.cpp
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})
