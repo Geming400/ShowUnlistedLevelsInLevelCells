@@ -1,4 +1,5 @@
 #include "NewTaskScheduler.hpp"
+#include <utility>
 
 using namespace ULILCTaskScheduler;
 
@@ -56,7 +57,7 @@ void NewTaskScheduler::addTask(Task task) {
 }
 
 void NewTaskScheduler::addTask(Task* task) {
-    m_tasksIndexexToID[task->getID()] = m_tasks.size();
+    m_tasksIndexexToID[task->getID()] = m_tasks.size() - 1;
     m_tasks.push_back(task);
 }
 
@@ -80,4 +81,8 @@ Task* NewTaskScheduler::getTask(const unsigned int taskID) {
         }
     }
     return nullptr;
+}
+
+Task* NewTaskScheduler::operator[](const size_t id) {
+    return m_tasks[m_tasksIndexexToID[id]];
 }

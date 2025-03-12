@@ -57,6 +57,8 @@ namespace ULILCTaskScheduler { // ULILC = Unlisted Levels In Level Cells
             void removeTask(const unsigned int taskID);
 
             Task* getTask(const unsigned int taskID);
+
+            Task* operator[](const size_t id);
         private:
             std::vector<Task*> m_tasks;
             std::map<int, int> m_tasksIndexexToID;
