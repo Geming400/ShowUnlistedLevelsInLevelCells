@@ -86,7 +86,7 @@ void QueueRequests::startLoop() {
     if ((!m_loopTaskID == 0) || (!Mod::get()->getSettingValue<bool>("let-queue-start"))) {
         return;
     }
-
+    
     auto loopInterval = Mod::get()->getSettingValue<double>("queue-requests-timing");
     auto recurringTask = new ULILCTaskScheduler::Task(
         [this]() { // add 'this' in the capture list
@@ -130,6 +130,7 @@ void QueueRequests::startLoop() {
     );
 
     m_loopTaskID = recurringTask->getID();
+    recurringTask->run();
 
     m_scheduler.addTask(recurringTask);
 }
