@@ -83,6 +83,20 @@ Task* NewTaskScheduler::getTask(const unsigned int taskID) {
     return nullptr;
 }
 
+void NewTaskScheduler::runAllTasks() {
+    for (auto task : m_tasks)
+    {
+        task->run();
+    }
+}
+
+void NewTaskScheduler::stopAllTasks() {
+    for (auto task : m_tasks)
+    {
+        task->stop();
+    }
+}
+
 Task* NewTaskScheduler::operator[](const size_t id) {
     return m_tasks[m_tasksIndexexToID[id]];
 }

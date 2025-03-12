@@ -56,6 +56,9 @@ namespace ULILCTaskScheduler { // ULILC = Unlisted Levels In Level Cells
             void addTask(Task* task);
             void removeTask(const unsigned int taskID);
 
+            void runAllTasks();
+            void stopAllTasks();
+
             Task* getTask(const unsigned int taskID);
 
             Task* operator[](const size_t id);
