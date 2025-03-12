@@ -55,6 +55,17 @@ void NewTaskScheduler::addTask(Task task) {
     m_tasks.push_back(&task);
 }
 
+void NewTaskScheduler::removeTask(const unsigned int taskID) {
+    Task* task = m_tasks[m_tasksIndexexToID[taskID]];
+    task->stop();
+
+    m_tasks.erase(
+        m_tasks.begin() + m_tasksIndexexToID[taskID]
+    );
+
+    m_tasksIndexexToID.erase(taskID);
+}
+
 Task* NewTaskScheduler::getTask(const unsigned int taskID) {
     for (auto task : m_tasks)
     {

@@ -54,6 +54,7 @@ namespace ULILCTaskScheduler { // ULILC = Unlisted Levels In Level Cells
             ~NewTaskScheduler();
 
             void addTask(Task task);
+            void removeTask(const unsigned int taskID);
 
             Task* getTask(const unsigned int taskID);
         private:
