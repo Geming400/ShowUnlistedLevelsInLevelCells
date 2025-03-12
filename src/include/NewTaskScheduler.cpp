@@ -55,6 +55,12 @@ void NewTaskScheduler::addTask(Task task) {
     m_tasks.push_back(&task);
 }
 
+void NewTaskScheduler::addTask(Task* task) {
+    m_tasksIndexexToID[task->getID()] = m_tasks.size();
+    m_tasks.push_back(task);
+}
+
+
 void NewTaskScheduler::removeTask(const unsigned int taskID) {
     Task* task = m_tasks[m_tasksIndexexToID[taskID]];
     task->stop();
