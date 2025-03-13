@@ -3,12 +3,8 @@
 #include "./utils/utils.hpp"
 
 #include <Geode/Geode.hpp>
-#include <Geode/modify/LevelCell.hpp>
-#include <Geode/modify/LevelBrowserLayer.hpp>
-#include <Geode/modify/MenuLayer.hpp>
+
 // The layers under this comment will be used to pick up new unlisted levels
-#include <Geode/modify/LevelInfoLayer.hpp>
-#include <Geode/modify/EditLevelLayer.hpp>
 
 using namespace geode::prelude;
 
@@ -37,6 +33,7 @@ bool wasQueued(GJGameLevel* level) {
 	return (LevelInfos::wasAlreadyQueued(level) && QueueRequests::get()->isQueued(level) && QueueRequests::get()->isQueuedInTempQueue(level) && LevelInfos::isLevelDaily(level));
 }
 
+#include <Geode/modify/EditLevelLayer.hpp>
 class $modify(MyEditLevelLayer, EditLevelLayer) {
 	bool init(GJGameLevel *p0) {
 		if (!EditLevelLayer::init(p0)) {
@@ -56,6 +53,7 @@ class $modify(MyEditLevelLayer, EditLevelLayer) {
 	}
 };
 
+#include <Geode/modify/LevelCell.hpp>
 class $modify(MyLevelCell, LevelCell) {
 	struct Fields {
 		bool m_isUnlisted;
@@ -194,6 +192,7 @@ class $modify(MyLevelCell, LevelCell) {
     }
 };
 
+#include <Geode/modify/MenuLayer.hpp>
 // getting all of the local levels to check if they are unlisted or not
 class $modify(MyMenuLayer, MenuLayer) {
 	bool hasLocalLevelsBeenChecked() const {
