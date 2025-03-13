@@ -47,18 +47,21 @@ unsigned int Task::getID() const {
 NewTaskScheduler::~NewTaskScheduler() {
     for (auto task : m_tasks)
     {
-        delete task;
+        if (task) {
+            delete task;
+        }
     }
 }
 
 void NewTaskScheduler::addTask(Task task) {
-    m_tasksIndexexToID[task.getID()] = m_tasks.size();
-    m_tasks.push_back(&task);
+    addTask(&task);
 }
 
 void NewTaskScheduler::addTask(Task* task) {
-    m_tasksIndexexToID[task->getID()] = m_tasks.size() - 1;
-    m_tasks.push_back(task);
+    if (task) {
+        m_tasksIndexexToID[task->getID()] = m_tasks.size() - 1;
+        m_tasks.push_back(task);
+    }
 }
 
 
