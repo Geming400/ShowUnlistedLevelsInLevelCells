@@ -2,7 +2,7 @@
 #include "../level/levelInfos.hpp"
 #include "../queue/queueRequests.hpp"
 
-void LevelCells::updateLevelCell(LevelCell* levelCell) {
+/*void LevelCells::updateLevelCell(LevelCell* levelCell) {
     CCSprite* clockSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::CLOCK_SPRITE_ID));
     CCSprite* unlistedSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::UNLISTED_SPRITE_ID));
     CCSprite* friendOnlySprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::FRIEND_ONLY_SPRITE_ID));
@@ -23,7 +23,7 @@ void LevelCells::updateLevelCell(LevelCell* levelCell) {
         friendOnlySprite->setOpacity(0);
         friendOnlySprite->setVisible(false);
     }
-}
+}*/
 
 bool LevelCells::isFriendsOnly(std::string levelResponse) {
     if (levelResponse == "-1") {

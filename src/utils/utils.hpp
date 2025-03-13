@@ -24,7 +24,7 @@ namespace Ids {
 }
 
 namespace LevelCells {
-    void updateLevelCell(LevelCell* levelCell);
+    //void updateLevelCell(LevelCell* levelCell);
 
     bool isFriendsOnly(std::string levelResponse);
 }
