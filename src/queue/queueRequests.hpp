@@ -34,6 +34,7 @@ public:
 
     void startLoop();
     void stopLoop();
+    void onGameQuit();
 private:
     void saveInfosOfLevelsInArray(CCArray* levels);
 
