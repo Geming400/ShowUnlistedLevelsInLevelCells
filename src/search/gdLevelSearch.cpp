@@ -33,7 +33,7 @@ void LevelSearch::hideClockIcon(int levelID) {
     if (levelCell) {
         Misc::log_debug("[LevelSearch::hideClockIcon()] Level cell found. Will save level infos");
         LevelInfos::addQueuedLevel(levelCell->m_level);
-        QueueRequests::get()->removeLevelFromTempQueue(levelCell);
+        //QueueRequests::get()->removeLevelFromTempQueue(levelCell);
         CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
 
         CCNode* sprite = levelCell->getChildByID(Ids::CLOCK_SPRITE_ID);
@@ -45,6 +45,8 @@ void LevelSearch::hideClockIcon(int levelID) {
         Misc::log_debug("[LevelSearch::hideClockIcon()] No level cell found. Can't save level infos");
         LevelInfos::addQueuedLevel(levelID);
     }
+    
+    QueueRequests::get()->removeLevelFromTempQueue(levelID);
 }
 
 WeakRef<LevelCell> LevelSearch::getLevelCell(int levelID) {
