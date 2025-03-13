@@ -227,5 +227,5 @@ WeakRef<LevelCell> QueueRequests::getLevelCellFromLevelID(int levelID, bool isTe
 }
 
 void QueueRequests::onGameQuit() {
-    m_scheduler.stopAllTasks();
+    stopLoop();
 }

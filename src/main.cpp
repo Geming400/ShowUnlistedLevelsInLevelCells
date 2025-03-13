@@ -240,5 +240,5 @@ $on_mod(DataSaved) {
 	log::info("Stopped level queue because gd closed.");
 
 	QueueRequests::get()->onGameQuit();
-	delete QueueRequests::get();
+	//delete QueueRequests::get();
 }
