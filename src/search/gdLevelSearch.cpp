@@ -31,6 +31,7 @@ void LMD::loadLevelsFinished(CCArray* p0, char const* p1) {
 void LevelSearch::hideClockIcon(int levelID) {
     Ref<LevelCell> levelCell = getLevelCell(levelID).lock();
     if (levelCell) {
+        Misc::log_debug("[LevelSearch::hideClockIcon()] Level cell found. Will save level infos");
         LevelInfos::addQueuedLevel(levelCell->m_level);
         QueueRequests::get()->removeLevelFromTempQueue(levelCell);
         CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
@@ -41,6 +42,7 @@ void LevelSearch::hideClockIcon(int levelID) {
     
         levelCell->release();
     } else {
+        Misc::log_debug("[LevelSearch::hideClockIcon()] No level cell found. Can't save level infos");
         LevelInfos::addQueuedLevel(levelID);
     }
 }
