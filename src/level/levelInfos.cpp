@@ -234,8 +234,8 @@ It's the mod that defines if the level is unlisted or friend only
 void LevelInfos::saveCustomLevelInfos(LevelCell* levelCell, bool isUnlisted, bool isFriendOnly) {
 	Misc::log_debug("LevelInfos::saveCustomLevelInfos()");
 	if (isUnlisted) {
-		CCFadeTo* iconFades = CCFadeTo::create(Fades::Fades::iconsFadeInTime, Fades::FadeTo::iconsFadeTo);
-		CCSprite* unlistedSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::UNLISTED_SPRITE_ID));
+		Ref<CCFadeTo> iconFades = CCFadeTo::create(Fades::Fades::iconsFadeInTime, Fades::FadeTo::iconsFadeTo);
+		Ref<CCSprite> unlistedSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::UNLISTED_SPRITE_ID));
 
 		unlistedSprite->setOpacity(0);
 		unlistedSprite->setVisible(true);
@@ -245,8 +245,8 @@ void LevelInfos::saveCustomLevelInfos(LevelCell* levelCell, bool isUnlisted, boo
 	}
 
 	if (isFriendOnly) {
-		CCFadeTo* FadeTo = CCFadeTo::create(Fades::Fades::iconsFadeInTime, Fades::FadeTo::iconsFadeTo);
-		CCSprite* friendOnlySprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::FRIEND_ONLY_SPRITE_ID));
+		Ref<CCFadeTo> FadeTo = CCFadeTo::create(Fades::Fades::iconsFadeInTime, Fades::FadeTo::iconsFadeTo);
+		Ref<CCSprite> friendOnlySprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::FRIEND_ONLY_SPRITE_ID));
 
 		friendOnlySprite->setVisible(true);
 		friendOnlySprite->setOpacity(0);

@@ -61,9 +61,9 @@ class $modify(MyLevelCell, LevelCell) {
 		bool m_isUnlisted;
 		bool m_isFriendOnly;
 
-		CCSprite* m_unlistedSprite;
-		CCSprite* m_friendOnlySprite;
-		CCSprite* m_clockSprite;
+		Ref<CCSprite> m_unlistedSprite;
+		Ref<CCSprite> m_friendOnlySprite;
+		Ref<CCSprite> m_clockSprite;
 	};
 
 	bool isSearchTypeAllowed(SearchType searchType) const {
@@ -236,3 +236,10 @@ class $modify(MyMenuLayer, MenuLayer) {
 		return true;
 	}
 };
+
+$on_mod(DataSaved) {
+	log::info("Stopped level queue because gd closed.");
+
+	QueueRequests::get()->onGameQuit();
+	delete QueueRequests::get();
+}
