@@ -29,6 +29,9 @@ If instead I was only relying on the queue, if the level was queued but while th
 at the end of day, because the request didn't finish
 */
 
+#define LOCK_WEAKREF(weakRef) weakRef.lock()
+#define LEVEL_FROM_WEAKREF(weakRef) LOCK_WEAKREF(weakRef)->m_level
+
 QueueRequests* QueueRequests::get() {
     static QueueRequests instance;
     return &instance;
@@ -46,32 +49,21 @@ void QueueRequests::addLevelToQueue(LevelCell* levelCell) {
 }
 
 void QueueRequests::addLevelToTempQueue(LevelCell* levelCell) {
-    // log::debug("LevelInfos::wasAlreadyQueued(levelCell->m_level) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelCell->m_level)));
-    // log::debug("isQueued(levelCell->m_level) = {}", std::to_string(isQueued(levelCell->m_level)));
-
     if (levelCell->m_level) {
-        m_tempQueuedLevelList[levelCell->m_level->m_levelID] = WeakRef(levelCell); // benefit of this:
-    }                                                                              // This will replace the old levelCell to a new one, which we will be able to apply a given CCAction fade
+        m_tempStoredLevelCell = WeakRef(levelCell); // benefit of this:
+    }                                           // This will replace the old levelCell to a new one, which we will be able to apply a given CCAction fade
 }
 
 void QueueRequests::removeLevelFromQueue(LevelCell* levelCell) {
     m_queuedLevelList.erase(levelCell->m_level->m_levelID);
 }
 
-void QueueRequests::removeLevelFromTempQueue(LevelCell* levelCell) {
-    m_tempQueuedLevelList.erase(levelCell->m_level->m_levelID);
-}
-
-void QueueRequests::removeLevelFromTempQueue(int levelID) {
-    m_tempQueuedLevelList.erase(levelID);
-}
-
 bool QueueRequests::isQueuedInTempQueue(GJGameLevel* level) {
-    return m_tempQueuedLevelList.contains(level->m_levelID);
+    return LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID == level->m_levelID;
 }
 
 bool QueueRequests::isQueuedInTempQueue(LevelCell* levelCell) {
-    return m_tempQueuedLevelList.contains(levelCell->m_level->m_levelID);
+    return LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID == levelCell->m_level->m_levelID;
 }
 
 bool QueueRequests::isQueued(GJGameLevel* level) {
@@ -161,42 +153,16 @@ std::vector<int> QueueRequests::getKeysFromQueuedLevels() {
     return keys;
 }
 
-
-std::vector<LevelCell*> QueueRequests::getLockedTempQueuedLevelList() {
-    std::vector<LevelCell*> values;
-
-    auto queue = getTempQueue();
-
-    for (size_t i = 0; i < queue.size(); i++)
-    {
-        values.push_back(queue.at(i).lock());
-    }
-    
-    return values;
-}
-
-std::vector<int> QueueRequests::getKeysFromTempQueuedLevels() {
-    std::vector<int> keys;
-
-    for (auto [k, v] : m_tempQueuedLevelList) { keys.push_back(k); }
-    
-    return keys;
-}
-
 void QueueRequests::clearQueue() {
     m_queuedLevelList.clear();
 }
 
 void QueueRequests::clearTempQueue() {
-    m_tempQueuedLevelList.clear();
+    m_tempStoredLevelCell = nullptr;
 }
 
 std::vector<WeakRef<LevelCell>> QueueRequests::getQueue() {
     return Misc::getValuesFromMap<int, WeakRef<LevelCell>>(m_queuedLevelList);
-}
-
-std::vector<WeakRef<LevelCell>> QueueRequests::getTempQueue() {
-    return Misc::getValuesFromMap<int, WeakRef<LevelCell>>(m_tempQueuedLevelList);
 }
 
 void print_map(std::map<int, WeakRef<LevelCell>> const &m) {
@@ -211,19 +177,22 @@ void print_map(std::map<int, WeakRef<LevelCell>> const &m) {
     log::info("------------");
 }
 
-WeakRef<LevelCell> QueueRequests::getLevelCellFromLevelID(int levelID, bool isTempQueue) {
-    std::map<int, WeakRef<LevelCell>> queue;
-
-    if (isTempQueue) {
-        queue = m_tempQueuedLevelList;
-    } else {
-        queue = m_queuedLevelList;
-    }
-    
+WeakRef<LevelCell> QueueRequests::getLevelCellFromLevelID(int levelID) {   
     if (Mod::get()->getSettingValue<bool>("show-debug-logs")) {
-        print_map(queue);
+        print_map(m_queuedLevelList);
     }
-    return queue[levelID];
+    return m_queuedLevelList[levelID];
+}
+
+WeakRef<LevelCell> QueueRequests::getStoredTempStoredLevel() {
+    log::info("------------"); // emulate (print_map())
+    if (m_tempStoredLevelCell.valid()) {
+        log::info("({}: VALID LEVEL CELL)", std::to_string(LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID));
+    } else {
+        log::info("({}: NOT A VALID LEVEL CELL)", std::to_string(LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID));
+    }
+    log::info("------------");
+    return m_tempStoredLevelCell;
 }
 
 void QueueRequests::onGameQuit() {

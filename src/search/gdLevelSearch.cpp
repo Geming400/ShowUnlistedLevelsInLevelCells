@@ -46,11 +46,11 @@ void LevelSearch::hideClockIcon(int levelID) {
         LevelInfos::addQueuedLevel(levelID);
     }
 
-    QueueRequests::get()->removeLevelFromTempQueue(levelID);
+    QueueRequests::get()->clearTempQueue();
 }
 
 WeakRef<LevelCell> LevelSearch::getLevelCell(int levelID) {
-    return QueueRequests::get()->getLevelCellFromLevelID(levelID, true);
+    return QueueRequests::get()->getStoredTempStoredLevel();
 }
 
 void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
@@ -104,6 +104,6 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
 
         hideClockIcon(levelID);
     });
-    
+
     m_listener.setFilter(req.post(URL));
 }

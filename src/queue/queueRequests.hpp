@@ -15,8 +15,6 @@ public:
     void addLevelToTempQueue(LevelCell* levelCell);
 
     void removeLevelFromQueue(LevelCell* levelCell);
-    void removeLevelFromTempQueue(LevelCell* levelCell);
-    void removeLevelFromTempQueue(int levelID);
 
     bool isQueuedInTempQueue(GJGameLevel* level);
     bool isQueuedInTempQueue(LevelCell* levelCell);
@@ -27,7 +25,8 @@ public:
     void clearQueue();
     void clearTempQueue();
 
-    WeakRef<LevelCell> getLevelCellFromLevelID(int levelID, bool isTempQueue = false);
+    WeakRef<LevelCell> getLevelCellFromLevelID(int levelID);
+    WeakRef<LevelCell> getStoredTempStoredLevel();
 
     std::vector<WeakRef<LevelCell>> getQueue();
     std::vector<WeakRef<LevelCell>> getTempQueue();
@@ -36,8 +35,6 @@ public:
     void stopLoop();
     void onGameQuit();
 private:
-    void saveInfosOfLevelsInArray(CCArray* levels);
-
     std::vector<LevelCell*> getLockedQueuedLevelList();
     std::vector<int> getKeysFromQueuedLevels();
 
@@ -48,7 +45,8 @@ private:
     //std::vector<WeakRef<LevelCell>> m_tempQueuedLevelList;
     
     std::map<int, WeakRef<LevelCell>> m_queuedLevelList;
-    std::map<int, WeakRef<LevelCell>> m_tempQueuedLevelList;
+    //std::map<int, WeakRef<LevelCell>> m_tempQueuedLevelList;
+    WeakRef<LevelCell> m_tempStoredLevelCell;
 
     // TaskScheduler m_scheduler = TaskScheduler(1); // 1 thread
     ULILCTaskScheduler::NewTaskScheduler m_scheduler;
