@@ -45,7 +45,7 @@ void LevelSearch::hideClockIcon(int levelID) {
         Misc::log_debug("[LevelSearch::hideClockIcon()] No level cell found. Can't save level infos");
         LevelInfos::addQueuedLevel(levelID);
     }
-    
+
     QueueRequests::get()->removeLevelFromTempQueue(levelID);
 }
 
@@ -104,6 +104,6 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
 
         hideClockIcon(levelID);
     });
-
+    
     m_listener.setFilter(req.post(URL));
 }
