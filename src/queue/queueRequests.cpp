@@ -98,19 +98,18 @@ void QueueRequests::startLoop() {
                     LevelCell* levelCell = getLockedQueuedLevelList().at(0); // always get the first element
                     int levelID = getKeysFromQueuedLevels().at(0);
                     
-                    GJGameLevel* level = nullptr;
+                    GJGameLevel* level;
 
                     if (levelCell) {
                         levelCell->retain();
                         addLevelToTempQueue(levelCell);
-                        GJGameLevel* level = levelCell->m_level;
+                        level = levelCell->m_level;
                         log::info("Queued {}", level->m_levelName);
                     } else {
                         log::debug("LevelCell is nullptr :(");
                     }
                 
                     LevelSearch levelSearch;
-                    
 
                     GJSearchObject* searchObject = GJSearchObject::create(SearchType::Search, std::to_string(levelID));
                     levelSearch.getGJLevels21(searchObject); // search for the level id
