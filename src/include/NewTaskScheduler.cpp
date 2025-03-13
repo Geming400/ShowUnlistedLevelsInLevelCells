@@ -20,9 +20,9 @@ void Task::run() {
     }
 }
 
-void Task::stop() {
+void Task::stop(bool stop_thread) {
     m_isRunning = false;
-    if (m_thread.joinable()) {
+    if (m_thread.joinable() && stop_thread) {
         m_thread.join();
     }
 }
@@ -93,7 +93,7 @@ void NewTaskScheduler::runAllTasks() {
 void NewTaskScheduler::stopAllTasks() {
     for (auto task : m_tasks)
     {
-        task->stop();
+        task->stop(false);
     }
 }
 

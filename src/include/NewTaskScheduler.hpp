@@ -4,6 +4,7 @@
 #include <vector>
 #include <functional>
 #include <chrono>
+#include <atomic>
 
 namespace ULILCTaskScheduler { // ULILC = Unlisted Levels In Level Cells
     /*
@@ -31,13 +32,13 @@ namespace ULILCTaskScheduler { // ULILC = Unlisted Levels In Level Cells
             ~Task();
 
             void run();
-            void stop();
+            void stop(bool stop_thread = true);
 
             unsigned int getID() const;
         private:
             void execute();
 
-            bool m_isRunning = false;
+            std::atomic<bool> m_isRunning = false;
             std::function<void()> m_func;
             unsigned int m_taskID;
 
