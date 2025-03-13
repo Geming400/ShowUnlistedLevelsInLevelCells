@@ -12,8 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - name: Windows
-          os: windows-latest
+        #- name: Windows
+          #os: windows-latest
 
         - name: macOS
           os: macos-latest
@@ -40,6 +40,8 @@ jobs:
           combine: true
           target: ${{ matrix.config.target }}
           sdk: nightly
+          build-config: RelWithDebInfo
+          export-pdb: true
 
   package:
     name: Package builds
