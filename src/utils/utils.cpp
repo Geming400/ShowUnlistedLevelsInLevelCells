@@ -25,10 +25,11 @@
     }
 }*/
 
-bool LevelCells::isFriendsOnly(std::string levelResponse) {
+bool LevelCells::isMaybeFriendsOnly(std::string levelResponse) {
     if (levelResponse == "-1") {
         return true;
     } else { // the code below is because of ip stuff (read https://discord.com/channels/911701438269386882/979402752121765898/1346204609730842665)
+             // The big issue with this, is that we can't know if the level is either unlisted or friends only because of robtop's stupid ip stuff. So we need to assume
         std::map<std::string, std::string> mappedResponse = Misc::gdStringResponseToMap(levelResponse, ":");
 
         std::vector<std::string> key35 = geode::utils::string::split(mappedResponse["35"], "#"); // see https://wyliemaster.github.io/gddocs/#/resources/client/level (k35)
