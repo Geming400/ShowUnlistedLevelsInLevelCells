@@ -42,6 +42,7 @@
 			"name": "Show friend only sprite"
 		},
 
+
 		"requests-title": {
 			"type": "title",
 			"name": "Requests"
@@ -49,8 +50,8 @@
 		"queue-requests": {
 			"type": "bool",
 			"default": true,
-			"name": "Queue requests",
-			"description": "This will queue the requests for finding if a level is unlisted or not. If disabled, the mod won't try to search for unlisted levels."
+			"name": "Search for levels' properties",
+			"description": "This will queue requests to find if a level is friends only / unlisted. If disabled, the mod won't try to search for unlfriends only / unlisted isted levels."
 		},
 		"queue-requests-timing": {
 			"type": "float",
@@ -60,42 +61,60 @@
 			"name": "Queue requests timing",
 			"description": "This is the time to wait between each requests to find out if the level is unlisted or not.",
 			"enable-if": "queue-requests",
-			"requires-restart": true,
 			"control": {
 				"slider": true,
 				"slider-step": 0.5,				
 				"input": true
 			}
 		},
+		"assume-level-type": {
+			"type": "string",
+			"default": "Unlisted",
+			"description": "Because of robtop, this mod <cb>can't really determine</cb> if the level is unlisted or friends only.\nThis setting is will tell the mod to mark the level as either Unlisted or Unlisted + Friends only.",
+			"one-of": ["Unlisted", "Unlisted + Friends only"],
+			"enable-if": "queue-requests"
+		},
+
 
 		"debug-title": {
 			"type": "title",
 			"name": "Debug utilities"
 		},
+		"enable-debug-utilities": {
+			"type": "bool",
+			"default": false,
+			"name": "Enable debug utilities"
+		},
 		"show-debug-logs": {
 			"type": "bool",
 			"default": false,
-			"name": "Show debug logs"
+			"name": "Show debug logs",
+			"enable-if": "enable-debug-utilities"
 		},
 		"reset-current-queue-button": {
 			"type": "custom:reset-current-queue-button",
-			"name": "Reset current queue"
+			"name": "Reset current queue",
+			"enable-if": "enable-debug-utilities"
 		},
 		"reset-saved-infos-button": {
 			"type": "custom:reset-saved-infos-button",
 			"name": "Reset saved infos",
-			"description": "This will remove every informations about each levels (= is unlisted, is friends only, was queued)"
+			"description": "This will remove every informations about each levels (= is unlisted, is friends only, was queued)",
+			"enable-if": "enable-debug-utilities"
 		},
 		"stop-queue-button": {
 			"type": "custom:stop-queue-button",
-			"name": "Stop queue"
+			"name": "Stop queue",
+			"enable-if": "enable-debug-utilities"
 		},
 		"let-queue-start": {
 			"type": "bool",
 			"default": true,
-			"name": "Let queue start"
+			"name": "Let queue start",
+			"enable-if": "enable-debug-utilities"
 		}
 	},
+
 	"resources": {
 		"sprites": ["resources/unlisted-icon.png", "resources/friend-only-icon.png"]
 	}
