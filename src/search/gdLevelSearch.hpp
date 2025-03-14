@@ -21,5 +21,4 @@ private:
     EventListener<web::WebTask> m_listener;
 
     int m_levelID = 0;
-    bool m_alreadyRan = false;
 };
