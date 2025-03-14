@@ -75,7 +75,7 @@ bool QueueRequests::isQueued(LevelCell* levelCell) {
 }
 
 void QueueRequests::startLoop() {
-    if ((!m_loopTaskID == 0) || (!Mod::get()->getSettingValue<bool>("let-queue-start"))) {
+    if ((!m_loopTaskID == 0) && (!Mod::get()->getSettingValue<bool>("let-queue-start") && Mod::get()->getSettingValue<bool>("enable-debug-utilities"))) {
         return;
     }
 
@@ -128,8 +128,10 @@ void QueueRequests::startLoop() {
 }
 
 void QueueRequests::stopLoop() {
-    m_scheduler.getTask(m_loopTaskID)->stop();
-    m_loopTaskID = 0;
+    if (!(m_loopTaskID == 0)) {
+        m_scheduler.getTask(m_loopTaskID)->stop();
+        m_loopTaskID = 0;
+    }
 }
 
 std::vector<LevelCell*> QueueRequests::getLockedQueuedLevelList() {

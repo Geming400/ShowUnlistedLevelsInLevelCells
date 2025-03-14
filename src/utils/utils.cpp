@@ -38,7 +38,7 @@ bool LevelCells::isMaybeFriendsOnly(std::string levelResponse) {
 }
 
 void Misc::log_debug(std::string s) {
-    if (Mod::get()->getSettingValue<bool>("show-debug-logs")) {
+    if (Mod::get()->getSettingValue<bool>("show-debug-logs") && Mod::get()->getSettingValue<bool>("enable-debug-utilities")) {
         log::debug("{}", s);
     }
 }

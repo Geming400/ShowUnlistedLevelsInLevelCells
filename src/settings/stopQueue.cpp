@@ -97,7 +97,7 @@ protected:
     void onButton(CCObject*) {
         QueueRequests::get()->stopLoop();
         Notification::create("Successfully stopped queue !", NotificationIcon::Success)->show();
-        if (!Mod::get()->getSettingValue<bool>("let-queue-start")) {
+        if (Mod::get()->getSettingValue<bool>("let-queue-start")) {
             Notification::create("(It will start again when entering MenuLayer)")->show();
         }
         log::info("Successfully stopped queue !");
