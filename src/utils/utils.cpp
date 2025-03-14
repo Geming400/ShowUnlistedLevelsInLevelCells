@@ -48,7 +48,7 @@ std::map<std::string, std::string> Misc::gdStringResponseToMap(std::string res, 
 
     std::map<std::string, std::string> finalMap;
 
-    for (size_t i = 0; i < splittedRes.size(); i = i+2)
+    for (size_t i = 0; i < splittedRes.size(); i = i + 2)
     {
         std::string key = splittedRes.at(i);
         std::string value = splittedRes.at(i + 1);
