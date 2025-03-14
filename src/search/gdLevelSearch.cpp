@@ -31,7 +31,7 @@ void LMD::loadLevelsFinished(CCArray* p0, char const* p1) {
 void LevelSearch::hideClockIcon(int levelID) {
     Ref<LevelCell> levelCell = getLevelCell(levelID).lock();
     if (levelCell) {
-        Misc::log_debug("[LevelSearch::hideClockIcon()] Level cell found. Will save level infos");
+        Misc::log_debug("[LevelSearch::hideClockIcon()] Level cell found. Will fade the clock icon");
         LevelInfos::addQueuedLevel(levelCell->m_level);
         //QueueRequests::get()->removeLevelFromTempQueue(levelCell);
         CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
@@ -47,6 +47,7 @@ void LevelSearch::hideClockIcon(int levelID) {
     }
 
     QueueRequests::get()->clearTempQueue();
+    delete this;
 }
 
 WeakRef<LevelCell> LevelSearch::getLevelCell(int levelID) {
@@ -83,21 +84,31 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
             if (res->ok()) {
                 std::string resString = res->string().unwrapOr("-1");
                 
-                log::debug("resString = {}", resString);
+                //log::debug("resString = {}", resString);
 
-                if (LevelCells::isFriendsOnly(resString)) {
-                    Misc::log_debug("Level is friends only");
+                if (LevelCells::isMaybeFriendsOnly(resString)) {
+                    Misc::log_debug("[LevelSearch::getGJLevels21] Will save level infos");
+                    bool isUnlisted = false;
+                    bool isFriendsOnly = false;
+
+                    if (Mod::get()->getSettingValue<std::string>("assume-level-type") == "Unlisted") {
+                        isUnlisted = true;
+                    } else if (Mod::get()->getSettingValue<std::string>("assume-level-type") == "Unlisted + Friends only") {
+                        isUnlisted = true;
+                        bool isFriendsOnly = true;
+                    }
+
                     if (levelCell) {
-                        LevelInfos::saveCustomLevelInfos(levelCell, true, true);
+                        LevelInfos::saveCustomLevelInfos(levelCell, isUnlisted, isFriendsOnly); // This allows us to show the friends / unlisted icon
                     } else {
-                        LevelInfos::saveCustomLevelInfos(levelID, true, true);
+                        LevelInfos::saveCustomLevelInfos(levelID, isUnlisted, isFriendsOnly);
                     }
                 }
             } else {
                 log::error("Request code is not 2xx and is {}", res->code()); // = no internet (probably) (robtop's servers dosen't return an actual status code by themselves) or the request failed (somehow :broken_hearth:)
             }
         } else if (e->isCancelled()) {
-            log::error("The request was cancelled... So sad :(");
+            log::warn("The request was cancelled... So sad :(");
         } else if (e->getProgress()) {
             return;
         }

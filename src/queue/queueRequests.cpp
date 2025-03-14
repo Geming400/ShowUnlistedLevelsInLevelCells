@@ -101,10 +101,10 @@ void QueueRequests::startLoop() {
                         log::debug("LevelCell is nullptr :(");
                     }
                 
-                    LevelSearch levelSearch;
+                    LevelSearch* levelSearch = new LevelSearch;
 
                     GJSearchObject* searchObject = GJSearchObject::create(SearchType::Search, std::to_string(levelID));
-                    levelSearch.getGJLevels21(searchObject); // search for the level id
+                    levelSearch->getGJLevels21(searchObject); // search for the level id
 
                     m_queuedLevelList.erase(levelID); // remove the first element in the vector
                     if (!m_queuedLevelList.contains(levelID)) {
@@ -165,13 +165,13 @@ std::vector<WeakRef<LevelCell>> QueueRequests::getQueue() {
     return Misc::getValuesFromMap<int, WeakRef<LevelCell>>(m_queuedLevelList);
 }
 
-void print_map(std::map<int, WeakRef<LevelCell>> const &m) {
+void print_map(std::map<int, WeakRef<LevelCell>> const &map) {
     log::info("------------");
-    for (auto const &pair: m) {
-        if (pair.second.valid()) {
-            log::info("({}: VALID LEVEL CELL)", std::to_string(pair.first));
+    for (auto const &[levelID, levelCell]: map) {
+        if (levelCell.valid()) {
+            log::info("({}: VALID LEVEL CELL)", std::to_string(levelID));
         } else {
-            log::info("({}: NOT A VALID LEVEL CELL)", std::to_string(pair.first));
+            log::info("({}: NOT A VALID LEVEL CELL)", std::to_string(levelID));
         }
     }
     log::info("------------");
@@ -189,7 +189,7 @@ WeakRef<LevelCell> QueueRequests::getStoredTempStoredLevel() {
     if (m_tempStoredLevelCell.valid()) {
         log::info("({}: VALID LEVEL CELL)", std::to_string(LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID));
     } else {
-        log::info("({}: NOT A VALID LEVEL CELL)", std::to_string(LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID));
+        log::info("(???: NOT A VALID LEVEL CELL)");
     }
     log::info("------------");
     return m_tempStoredLevelCell;
