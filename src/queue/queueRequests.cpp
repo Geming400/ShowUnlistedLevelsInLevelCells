@@ -75,7 +75,7 @@ bool QueueRequests::isQueued(LevelCell* levelCell) {
 }
 
 void QueueRequests::startLoop() {
-    if ((!m_loopTaskID == 0) && (!Mod::get()->getSettingValue<bool>("let-queue-start") && Mod::get()->getSettingValue<bool>("enable-debug-utilities"))) {
+    if (!(m_loopTaskID == 0) && (!Mod::get()->getSettingValue<bool>("let-queue-start") && Mod::get()->getSettingValue<bool>("enable-debug-utilities"))) {
         return;
     }
 
