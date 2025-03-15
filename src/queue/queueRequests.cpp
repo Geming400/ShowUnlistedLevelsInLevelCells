@@ -29,8 +29,8 @@ If instead I was only relying on the queue, if the level was queued but while th
 at the end of day, because the request didn't finish
 */
 
-#define LOCK_WEAKREF(weakRef) weakRef.lock()
-#define LEVEL_FROM_WEAKREF(weakRef) LOCK_WEAKREF(weakRef)->m_level
+#define GEODE_LOCK_WEAKREF(weakRef) weakRef.lock()
+#define GEODE_LEVEL_FROM_WEAKREF(weakRef) GEODE_LOCK_WEAKREF(weakRef)->m_level
 
 QueueRequests* QueueRequests::get() {
     static QueueRequests instance;
@@ -59,11 +59,11 @@ void QueueRequests::removeLevelFromQueue(LevelCell* levelCell) {
 }
 
 bool QueueRequests::isQueuedInTempQueue(GJGameLevel* level) {
-    return LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID == level->m_levelID;
+    return GEODE_LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID == level->m_levelID;
 }
 
 bool QueueRequests::isQueuedInTempQueue(LevelCell* levelCell) {
-    return LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID == levelCell->m_level->m_levelID;
+    return GEODE_LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID == levelCell->m_level->m_levelID;
 }
 
 bool QueueRequests::isQueued(GJGameLevel* level) {
@@ -189,7 +189,7 @@ WeakRef<LevelCell> QueueRequests::getLevelCellFromLevelID(int levelID) {
 WeakRef<LevelCell> QueueRequests::getStoredTempStoredLevel() {
     log::info("------------"); // emulate (print_map())
     if (m_tempStoredLevelCell.valid()) {
-        log::info("({}: VALID LEVEL CELL)", std::to_string(LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID));
+        log::info("({}: VALID LEVEL CELL)", std::to_string(GEODE_LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID));
     } else {
         log::info("(???: NOT A VALID LEVEL CELL)");
     }

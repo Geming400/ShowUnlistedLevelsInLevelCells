@@ -34,9 +34,9 @@ void LevelSearch::hideClockIcon(int levelID) {
         Misc::log_debug("[LevelSearch::hideClockIcon()] Level cell found. Will fade the clock icon");
         LevelInfos::addQueuedLevel(levelCell->m_level);
         //QueueRequests::get()->removeLevelFromTempQueue(levelCell);
-        CCFadeTo* fade = CCFadeTo::create(Fades::Fades::clockFadeOutTime, 0); // to 0 opacity
+        CCFadeTo* fade = CCFadeTo::create(fades::Fades::clockFadeOutTime, 0); // to 0 opacity
 
-        CCNode* sprite = levelCell->getChildByID(Ids::CLOCK_SPRITE_ID);
+        CCNode* sprite = levelCell->getChildByID(ids::CLOCK_SPRITE_ID);
         if (sprite) { sprite->runAction(fade); }
         //clockSprite->setVisible(false);
     
@@ -86,7 +86,7 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
                 
                 //log::debug("resString = {}", resString);
 
-                if (LevelCells::isMaybeFriendsOnly(resString)) {
+                if (levelCells::isMaybeFriendsOnly(resString)) {
                     Misc::log_debug("[LevelSearch::getGJLevels21] Will save level infos");
                     bool isUnlisted = false;
                     bool isFriendsOnly = false;

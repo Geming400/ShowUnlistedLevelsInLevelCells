@@ -8,18 +8,6 @@
 
 using namespace geode::prelude;
 
-const CCPoint firstPos = {340, 10}; // the first pos, aka it's on the left side
-const CCPoint secondPos = {325, 10}; // the second pos, aka it's on the left side but a little bit less
-
-const std::unordered_set<SearchType> allowedTypes = { // TODO: Try implemeting that in the future
-	SearchType::Downloaded,
-	SearchType::FavouriteLevels,
-	SearchType::MyLevels,
-	// SearchType::Reported, // wth is this
-	SearchType::SavedLevels,
-	SearchType::Search
-};
-
 /* 
 if the level was already queued
 AND
@@ -65,7 +53,7 @@ class $modify(MyLevelCell, LevelCell) {
 	};
 
 	bool isSearchTypeAllowed(SearchType searchType) const {
-		return allowedTypes.contains(searchType);
+		return levelCells::allowedTypes.contains(searchType);
 	}
 
 	/*
@@ -124,10 +112,10 @@ class $modify(MyLevelCell, LevelCell) {
 
 		m_fields->m_unlistedSprite = CCSprite::create("unlisted-icon.png"_spr);
 
-		m_fields->m_unlistedSprite->setID(Ids::UNLISTED_SPRITE_ID);
-		m_fields->m_unlistedSprite->setPosition(firstPos);
+		m_fields->m_unlistedSprite->setID(ids::UNLISTED_SPRITE_ID);
+		m_fields->m_unlistedSprite->setPosition(levelCells::firstPos);
 		m_fields->m_unlistedSprite->setScale(0.5f);
-		m_fields->m_unlistedSprite->setOpacity(Fades::FadeTo::iconsFadeTo);
+		m_fields->m_unlistedSprite->setOpacity(fades::FadeTo::iconsFadeTo);
 		m_fields->m_unlistedSprite->setVisible(false);
 
 		addChild(m_fields->m_unlistedSprite);
@@ -145,14 +133,14 @@ class $modify(MyLevelCell, LevelCell) {
 
 		m_fields->m_friendOnlySprite = CCSprite::create("friend-only-icon.png"_spr);
 
-		m_fields->m_friendOnlySprite->setID(Ids::FRIEND_ONLY_SPRITE_ID);
+		m_fields->m_friendOnlySprite->setID(ids::FRIEND_ONLY_SPRITE_ID);
 		if (Mod::get()->getSettingValue<bool>("show-unlisted-sprite")) {
-			m_fields->m_friendOnlySprite->setPosition(secondPos);
+			m_fields->m_friendOnlySprite->setPosition(levelCells::secondPos);
 		} else {
-			m_fields->m_friendOnlySprite->setPosition(firstPos);
+			m_fields->m_friendOnlySprite->setPosition(levelCells::firstPos);
 		}
 		m_fields->m_friendOnlySprite->setScale(0.5f);
-		m_fields->m_friendOnlySprite->setOpacity(Fades::FadeTo::iconsFadeTo);
+		m_fields->m_friendOnlySprite->setOpacity(fades::FadeTo::iconsFadeTo);
 		m_fields->m_friendOnlySprite->setVisible(false);
 		
 		
@@ -166,10 +154,10 @@ class $modify(MyLevelCell, LevelCell) {
 
 		m_fields->m_clockSprite = CCSprite::createWithSpriteFrameName("GJ_timeIcon_001.png");
 
-		m_fields->m_clockSprite->setID(Ids::CLOCK_SPRITE_ID);
-		m_fields->m_clockSprite->setPosition(firstPos);
+		m_fields->m_clockSprite->setID(ids::CLOCK_SPRITE_ID);
+		m_fields->m_clockSprite->setPosition(levelCells::firstPos);
 		m_fields->m_clockSprite->setScale(0.5f);
-		m_fields->m_clockSprite->setOpacity(Fades::FadeTo::iconsFadeTo);
+		m_fields->m_clockSprite->setOpacity(fades::FadeTo::iconsFadeTo);
 		m_fields->m_clockSprite->setVisible(false);
 		
 

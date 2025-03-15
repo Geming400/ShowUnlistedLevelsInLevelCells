@@ -27,44 +27,44 @@ namespace ULILCTaskScheduler { // ULILC = Unlisted Levels In Level Cells
 
     */
     class Task {
-        public:
-            Task(std::function<void()> func, std::chrono::milliseconds interval, unsigned int taskID);
-            ~Task();
+    public:
+        Task(std::function<void()> func, std::chrono::milliseconds interval, unsigned int taskID);
+        ~Task();
 
-            void run();
-            void stop(bool stop_thread = true);
+        void run();
+        void stop(bool stop_thread = true);
 
-            unsigned int getID() const;
-        private:
-            void execute();
+        unsigned int getID() const;
+    private:
+        void execute();
 
-            std::atomic<bool> m_isRunning = false;
-            std::function<void()> m_func;
-            unsigned int m_taskID;
+        std::atomic<bool> m_isRunning = false;
+        std::function<void()> m_func;
+        unsigned int m_taskID;
 
-            std::thread m_thread;
-            std::chrono::milliseconds m_interval;
+        std::thread m_thread;
+        std::chrono::milliseconds m_interval;
     };
 
 
 
     class NewTaskScheduler
     {
-        public:
-            ~NewTaskScheduler();
+    public:
+        ~NewTaskScheduler();
 
-            void addTask(Task task);
-            void addTask(Task* task);
-            void removeTask(const unsigned int taskID);
+        void addTask(Task task);
+        void addTask(Task* task);
+        void removeTask(unsigned int const taskID);
 
-            void runAllTasks();
-            void stopAllTasks();
+        void runAllTasks();
+        void stopAllTasks();
 
-            Task* getTask(const unsigned int taskID);
+        Task* getTask(unsigned int const taskID);
 
-            Task* operator[](const size_t id);
-        private:
-            std::vector<Task*> m_tasks;
-            std::map<int, int> m_tasksIndexexToID;
+        Task* operator[](size_t const id);
+    private:
+        std::vector<Task*> m_tasks;
+        std::map<int, int> m_tasksIndexexToID;
     };
 }

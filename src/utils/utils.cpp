@@ -2,10 +2,10 @@
 #include "../level/levelInfos.hpp"
 #include "../queue/queueRequests.hpp"
 
-/*void LevelCells::updateLevelCell(LevelCell* levelCell) {
-    CCSprite* clockSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::CLOCK_SPRITE_ID));
-    CCSprite* unlistedSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::UNLISTED_SPRITE_ID));
-    CCSprite* friendOnlySprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(Ids::FRIEND_ONLY_SPRITE_ID));
+/*void levelCells::updateLevelCell(LevelCell* levelCell) {
+    CCSprite* clockSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(ids::CLOCK_SPRITE_ID));
+    CCSprite* unlistedSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(ids::UNLISTED_SPRITE_ID));
+    CCSprite* friendOnlySprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(ids::FRIEND_ONLY_SPRITE_ID));
     
     if (!(clockSprite && unlistedSprite && friendOnlySprite)) {
         return;
@@ -25,7 +25,7 @@
     }
 }*/
 
-bool LevelCells::isMaybeFriendsOnly(std::string levelResponse) {
+bool levelCells::isMaybeFriendsOnly(std::string levelResponse) {
     if (levelResponse == "-1") {
         return true;
     } else { // the code below is because of ip stuff (read https://discord.com/channels/911701438269386882/979402752121765898/1346204609730842665)
