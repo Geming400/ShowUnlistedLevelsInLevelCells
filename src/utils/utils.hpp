@@ -43,7 +43,7 @@ namespace levelCells {
     };
 }
 
-namespace Misc {
+namespace misc {
     template<class Key, class Value>
     std::vector<Value> getValuesFromMap(std::map<Key, Value> map) {
         std::vector<Value> values;

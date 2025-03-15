@@ -55,11 +55,11 @@ void LevelInfos::addUnlistedLevel(int levelID) {
 
 	// if the level is already unlisted, don't add it to the unlisted level array
 	if (isUnlisted(levelID)) {
-		Misc::log_debug(fmt::format("Level with ID {} is already in the '{}' array", levelID, unlistedLevelsKey));
+		misc::log_debug(fmt::format("Level with ID {} is already in the '{}' array", levelID, unlistedLevelsKey));
 		return;
 	}
 
-	Misc::log_debug(fmt::format("Refreshing the '{}' level array", unlistedLevelsKey));
+	misc::log_debug(fmt::format("Refreshing the '{}' level array", unlistedLevelsKey));
 
 	auto unlistedLevels = getUnlistedLevels();
 	unlistedLevels.push(levelID);
@@ -110,11 +110,11 @@ void LevelInfos::addFriendOnlyLevel(int levelID) {
 	
 	// if the level is already unlisted, don't add it to the unlisted level array
 	if (LevelInfos::isFriendOnly(levelID)) {
-		Misc::log_debug(fmt::format("level with ID {} is already in the '{}' array", levelID, friendOnlyLevelsKey));
+		misc::log_debug(fmt::format("level with ID {} is already in the '{}' array", levelID, friendOnlyLevelsKey));
 		return;
 	}
 
-	Misc::log_debug(fmt::format("Refreshing the '{}' level array", friendOnlyLevelsKey));
+	misc::log_debug(fmt::format("Refreshing the '{}' level array", friendOnlyLevelsKey));
 
 	matjson::Value friendOnlyLevels = getFriendOnlyLevels();
 	friendOnlyLevels.push(levelID);
@@ -132,7 +132,7 @@ void LevelInfos::clearFriendOnlyLevels() {
 auto LevelInfos::getAlreadyQueuedLevels() {
 	auto parsedQueuedLevels = matjson::parse(Mod::get()->getSavedValue<std::string>(queuedLevelsKey, EMPTY_ARRAY)); // get the queued levels from the saved key and turn it into a Geode::Result instance
 	matjson::Value unwrapedQueuedLevels = parsedQueuedLevels.unwrapOr(EMPTY_ARRAY); // get the queued levels but in a matjson array
-	Misc::log_debug(fmt::format("unwrapedQueuedLevels.size() = {}", unwrapedQueuedLevels.size()));
+	misc::log_debug(fmt::format("unwrapedQueuedLevels.size() = {}", unwrapedQueuedLevels.size()));
 	return unwrapedQueuedLevels;
 }
 
@@ -164,11 +164,11 @@ void LevelInfos::addQueuedLevel(GJGameLevel* level) {
 void LevelInfos::addQueuedLevel(int levelID) {
 	// if the level is already queued, don't add it to the queued level array
 	if (LevelInfos::wasAlreadyQueued(levelID)) {
-		Misc::log_debug(fmt::format("level with ID {} is already in the '{}' array", levelID, queuedLevelsKey));
+		misc::log_debug(fmt::format("level with ID {} is already in the '{}' array", levelID, queuedLevelsKey));
 		return;
 	}
 
-	Misc::log_debug(fmt::format("Refreshing the '{}' level array", queuedLevelsKey));
+	misc::log_debug(fmt::format("Refreshing the '{}' level array", queuedLevelsKey));
 
 	auto queuedLevels = getAlreadyQueuedLevels();
 	queuedLevels.push(levelID);
@@ -187,12 +187,12 @@ void LevelInfos::saveLevelInfos(GJGameLevel* level) {
 	LevelInfos::addQueuedLevel(level);
 
 	if (level->m_unlisted) {
-		Misc::log_debug("Level is unlisted");
+		misc::log_debug("Level is unlisted");
 		addUnlistedLevel(level);
 	}
 
 	if (level->m_friendsOnly) {
-		Misc::log_debug("Level is friend only");
+		misc::log_debug("Level is friend only");
 		addFriendOnlyLevel(level);
 	}
 }
@@ -202,7 +202,7 @@ This function is like saveLevelInfos except it won't see the content of level->m
 It's the mod that defines if the level is unlisted or friend only
 */
 void LevelInfos::saveCustomLevelInfos(GJGameLevel* level, bool isUnlisted, bool isFriendOnly) {
-	Misc::log_debug("LevelInfos::saveCustomLevelInfos()");
+	misc::log_debug("LevelInfos::saveCustomLevelInfos()");
 	if (isUnlisted) {
 		addUnlistedLevel(level);
 	}
@@ -217,7 +217,7 @@ This function is like saveLevelInfos except it won't see the content of level->m
 It's the mod that defines if the level is unlisted or friend only
 */
 void LevelInfos::saveCustomLevelInfos(int levelID, bool isUnlisted, bool isFriendOnly) {
-	Misc::log_debug("LevelInfos::saveCustomLevelInfos()");
+	misc::log_debug("LevelInfos::saveCustomLevelInfos()");
 	if (isUnlisted) {
 		addUnlistedLevel(levelID);
 	}
@@ -232,7 +232,7 @@ This function is like saveLevelInfos except it won't see the content of level->m
 It's the mod that defines if the level is unlisted or friend only
 */
 void LevelInfos::saveCustomLevelInfos(LevelCell* levelCell, bool isUnlisted, bool isFriendOnly) {
-	Misc::log_debug("LevelInfos::saveCustomLevelInfos()");
+	misc::log_debug("LevelInfos::saveCustomLevelInfos()");
 	if (isUnlisted) {
 		Ref<CCFadeTo> iconFades = CCFadeTo::create(fades::Fades::iconsFadeInTime, fades::FadeTo::iconsFadeTo);
 		Ref<CCSprite> unlistedSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(ids::UNLISTED_SPRITE_ID));

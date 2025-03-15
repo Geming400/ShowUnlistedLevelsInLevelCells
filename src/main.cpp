@@ -166,7 +166,7 @@ class $modify(MyLevelCell, LevelCell) {
 		// Adding the level in queue or something
 
 		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly) && !wasQueued(m_level)) {
-			Misc::log_debug(fmt::format("Adding {} to queue from main.cpp", m_level->m_levelName));
+			misc::log_debug(fmt::format("Adding {} to queue from main.cpp", m_level->m_levelName));
 			QueueRequests::get()->addLevelToQueue(this);
 		}
 

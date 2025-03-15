@@ -44,7 +44,7 @@ void QueueRequests::addLevelToQueue(LevelCell* levelCell) {
     if (levelCell->m_level && !(LevelInfos::wasAlreadyQueued(levelCell->m_level))) {
         m_queuedLevelList[levelCell->m_level->m_levelID] = WeakRef(levelCell); // benefit of this:
     } else {                                                                   // This will replace the old levelCell to a new one, which we will be able to apply a given CCAction fade
-        Misc::log_debug(fmt::format("Level {} won't be added to queue, as it was already in queue", levelCell->m_level->m_levelName));
+        misc::log_debug(fmt::format("Level {} won't be added to queue, as it was already in queue", levelCell->m_level->m_levelName));
     }
 }
 
@@ -84,7 +84,7 @@ void QueueRequests::startLoop() {
         [this]() { // add 'this' in the capture list
             if (Mod::get()->getSettingValue<bool>("queue-requests")) { // also putting this in case the user turn off this feature while the loop is running
                 // log::debug("isQueuedLevelsSuperiorToN() = {}", std::to_string(isQueuedLevelsSuperiorToN(0, false)));
-                Misc::log_debug(fmt::format("queuedLevelList.size() = {}", std::to_string(getQueue().size())));
+                misc::log_debug(fmt::format("queuedLevelList.size() = {}", std::to_string(getQueue().size())));
 
                 if (m_queuedLevelList.size() > 0) {                   
                     LevelCell* levelCell = getLockedQueuedLevelList().at(0); // always get the first element
@@ -164,7 +164,7 @@ void QueueRequests::clearTempQueue() {
 }
 
 std::vector<WeakRef<LevelCell>> QueueRequests::getQueue() {
-    return Misc::getValuesFromMap<int, WeakRef<LevelCell>>(m_queuedLevelList);
+    return misc::getValuesFromMap<int, WeakRef<LevelCell>>(m_queuedLevelList);
 }
 
 void print_map(std::map<int, WeakRef<LevelCell>> const &map) {

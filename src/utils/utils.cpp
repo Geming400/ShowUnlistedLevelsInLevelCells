@@ -30,20 +30,20 @@ bool levelCells::isMaybeFriendsOnly(std::string levelResponse) {
         return true;
     } else { // the code below is because of ip stuff (read https://discord.com/channels/911701438269386882/979402752121765898/1346204609730842665)
              // The big issue with this, is that we can't know if the level is either unlisted or friends only because of robtop's stupid ip stuff. So we need to assume
-        std::map<std::string, std::string> mappedResponse = Misc::gdStringResponseToMap(levelResponse, ":");
+        std::map<std::string, std::string> mappedResponse = misc::gdStringResponseToMap(levelResponse, ":");
 
         std::vector<std::string> key35 = geode::utils::string::split(mappedResponse["35"], "#"); // see https://wyliemaster.github.io/gddocs/#/resources/client/level (k35)
         return key35.at(0) == "0";
     }
 }
 
-void Misc::log_debug(std::string s) {
+void misc::log_debug(std::string s) {
     if (Mod::get()->getSettingValue<bool>("show-debug-logs") && Mod::get()->getSettingValue<bool>("enable-debug-utilities")) {
         log::debug("{}", s);
     }
 }
 
-std::map<std::string, std::string> Misc::gdStringResponseToMap(std::string res, std::string sep){
+std::map<std::string, std::string> misc::gdStringResponseToMap(std::string res, std::string sep){
     std::vector<std::string> splittedRes = geode::utils::string::split(res, sep);
 
     std::map<std::string, std::string> finalMap;
