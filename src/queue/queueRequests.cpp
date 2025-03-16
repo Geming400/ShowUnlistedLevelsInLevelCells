@@ -38,8 +38,8 @@ QueueRequests* QueueRequests::get() {
 }
 
 void QueueRequests::addLevelToQueue(LevelCell* levelCell) {
-    // log::debug("LevelInfos::wasAlreadyQueued(levelCell->m_level) = {}", std::to_string(LevelInfos::wasAlreadyQueued(levelCell->m_level)));
-    // log::debug("isQueued(levelCell->m_level) = {}", std::to_string(isQueued(levelCell->m_level)));
+    // log::debug("LevelInfos::wasAlreadyQueued(levelCell->m_level) = {}", fmt::to_string(LevelInfos::wasAlreadyQueued(levelCell->m_level)));
+    // log::debug("isQueued(levelCell->m_level) = {}", fmt::to_string(isQueued(levelCell->m_level)));
 
     if (levelCell->m_level && !(LevelInfos::wasAlreadyQueued(levelCell->m_level))) {
         m_queuedLevelList[levelCell->m_level->m_levelID] = WeakRef(levelCell); // benefit of this:
@@ -83,8 +83,8 @@ void QueueRequests::startLoop() {
     auto recurringTask = new ULILCTaskScheduler::Task(
         [this]() { // add 'this' in the capture list
             if (Mod::get()->getSettingValue<bool>("queue-requests")) { // also putting this in case the user turn off this feature while the loop is running
-                // log::debug("isQueuedLevelsSuperiorToN() = {}", std::to_string(isQueuedLevelsSuperiorToN(0, false)));
-                misc::log_debug(fmt::format("queuedLevelList.size() = {}", std::to_string(getQueue().size())));
+                // log::debug("isQueuedLevelsSuperiorToN() = {}", fmt::to_string(isQueuedLevelsSuperiorToN(0, false)));
+                misc::log_debug(fmt::format("queuedLevelList.size() = {}", fmt::to_string(getQueue().size())));
 
                 if (m_queuedLevelList.size() > 0) {                   
                     LevelCell* levelCell = getLockedQueuedLevelList().at(0); // always get the first element
@@ -103,7 +103,7 @@ void QueueRequests::startLoop() {
                 
                     LevelSearch* levelSearch = new LevelSearch;
 
-                    GJSearchObject* searchObject = GJSearchObject::create(SearchType::Search, std::to_string(levelID));
+                    GJSearchObject* searchObject = GJSearchObject::create(SearchType::Search, fmt::to_string(levelID));
                     levelSearch->getGJLevels21(searchObject); // search for the level id
 
                     m_queuedLevelList.erase(levelID); // remove the first element in the vector
@@ -171,9 +171,9 @@ void print_map(std::map<int, WeakRef<LevelCell>> const &map) {
     log::info("------------");
     for (auto const &[levelID, levelCell]: map) {
         if (levelCell.valid()) {
-            log::info("({}: VALID LEVEL CELL)", std::to_string(levelID));
+            log::info("({}: VALID LEVEL CELL)", fmt::to_string(levelID));
         } else {
-            log::info("({}: NOT A VALID LEVEL CELL)", std::to_string(levelID));
+            log::info("({}: NOT A VALID LEVEL CELL)", fmt::to_string(levelID));
         }
     }
     log::info("------------");
@@ -189,7 +189,7 @@ WeakRef<LevelCell> QueueRequests::getLevelCellFromLevelID(int levelID) {
 WeakRef<LevelCell> QueueRequests::getStoredTempStoredLevel() {
     log::info("------------"); // emulate (print_map())
     if (m_tempStoredLevelCell.valid()) {
-        log::info("({}: VALID LEVEL CELL)", std::to_string(GEODE_LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID));
+        log::info("({}: VALID LEVEL CELL)", fmt::to_string(GEODE_LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID));
     } else {
         log::info("(???: NOT A VALID LEVEL CELL)");
     }
