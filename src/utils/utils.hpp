@@ -5,14 +5,12 @@
 using namespace geode::prelude;
 
 namespace fades {
-    class Fades {
-    public:
+    struct Fades {
         static inline float clockFadeOutTime = 0.5f;
         static inline float iconsFadeInTime = 0.8f;
     };
 
-    class FadeTo {
-    public:
+    struct FadeTo {
         static inline unsigned int iconsFadeTo = 128;
     };
 }
