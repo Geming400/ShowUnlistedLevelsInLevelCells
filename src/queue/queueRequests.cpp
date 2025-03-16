@@ -29,8 +29,7 @@ If instead I was only relying on the queue, if the level was queued but while th
 at the end of day, because the request didn't finish
 */
 
-#define GEODE_LOCK_WEAKREF(weakRef) weakRef.lock()
-#define GEODE_LEVEL_FROM_WEAKREF(weakRef) GEODE_LOCK_WEAKREF(weakRef)->m_level
+#define GEODE_LEVEL_FROM_WEAKREF(weakRef) weakRef.lock()->m_level
 
 QueueRequests* QueueRequests::get() {
     static QueueRequests instance;
