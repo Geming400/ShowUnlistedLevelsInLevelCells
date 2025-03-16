@@ -53,6 +53,8 @@ namespace ULILCTaskScheduler { // ULILC = Unlisted Levels In Level Cells
     public:
         ~NewTaskScheduler();
 
+        NewTaskScheduler(size_t maxTaskCount = -1);
+
         void addTask(Task task);
         void addTask(Task* task);
         void removeTask(unsigned int const taskID);
@@ -64,6 +66,8 @@ namespace ULILCTaskScheduler { // ULILC = Unlisted Levels In Level Cells
 
         Task* operator[](size_t const id);
     private:
+        size_t m_maxTaskCount;
+        
         std::vector<Task*> m_tasks;
         std::map<int, int> m_tasksIndexexToID;
     };

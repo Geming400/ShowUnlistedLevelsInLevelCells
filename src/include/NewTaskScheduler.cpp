@@ -43,6 +43,9 @@ unsigned int Task::getID() const {
 }
 
 
+NewTaskScheduler::NewTaskScheduler(size_t maxTaskCount) {
+    m_maxTaskCount = maxTaskCount;
+}
 
 NewTaskScheduler::~NewTaskScheduler() {
     for (auto task : m_tasks)
@@ -58,12 +61,21 @@ void NewTaskScheduler::addTask(Task task) {
 }
 
 void NewTaskScheduler::addTask(Task* task) {
-    if (task) {
-        m_tasksIndexexToID[task->getID()] = m_tasks.size() - 1;
-        m_tasks.push_back(task);
+    auto actuallyAddTask = [this, task]() {
+        if (task) {
+            m_tasksIndexexToID[task->getID()] = m_tasks.size() - 1;
+            m_tasks.push_back(task);
+        }
+    };
+
+    if (m_maxTaskCount == -1) {
+        actuallyAddTask();
+    } else {
+        if (m_maxTaskCount >= m_tasks.size()) {
+            actuallyAddTask();
+        }
     }
 }
-
 
 void NewTaskScheduler::removeTask(unsigned int const taskID) {
     Task* task = m_tasks[m_tasksIndexexToID[taskID]];
