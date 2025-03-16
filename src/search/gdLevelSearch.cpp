@@ -37,7 +37,11 @@ void LevelSearch::hideClockIcon(int levelID) {
         CCFadeTo* fade = CCFadeTo::create(fades::Fades::clockFadeOutTime, 0); // to 0 opacity
 
         CCNode* sprite = levelCell->getChildByID(ids::CLOCK_SPRITE_ID);
-        if (sprite) { sprite->runAction(fade); }
+        if (sprite) {
+            sprite->runAction(fade);
+        } else {
+            log::error("Clock Sprite not found !!");
+        }
         //clockSprite->setVisible(false);
     
         levelCell->release();
@@ -161,5 +165,5 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
         hideClockIcon(levelID);
     });
 
-    m_listener.setFilter(req.post(URL));
+    m_listener.setFilter(req.get(newUrl));
 }

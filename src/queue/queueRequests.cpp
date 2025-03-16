@@ -74,14 +74,14 @@ bool QueueRequests::isQueued(LevelCell* levelCell) {
 }
 
 void QueueRequests::startLoop() {
-    if (!(m_loopTaskID == 0) && (!Mod::get()->getSettingValue<bool>("let-queue-start") && Mod::get()->getSettingValue<bool>("enable-debug-utilities"))) {
+    if (!(m_loopTaskID == 0) || (!Mod::get()->getSettingValue<bool>("let-queue-start") && Mod::get()->getSettingValue<bool>("enable-debug-utilities"))) {
         return;
     }
 
     auto loopInterval = Mod::get()->getSettingValue<double>("queue-requests-timing");
     auto recurringTask = new ULILCTaskScheduler::Task(
         [this]() { // add 'this' in the capture list
-            if (Mod::get()->getSettingValue<bool>("queue-requests")) { // also putting this in case the user turn off this feature while the loop is running
+            if (Mod::get()->getSettingValue<bool>("queue-requests") && Mod::get()->getSettingValue<bool>("let-queue-start")) { // also putting this in case the user turn off this feature while the loop is running
                 // log::debug("isQueuedLevelsSuperiorToN() = {}", std::to_string(isQueuedLevelsSuperiorToN(0, false)));
                 misc::log_debug(fmt::format("queuedLevelList.size() = {}", std::to_string(getQueue().size())));
 

@@ -49,7 +49,7 @@ private:
     WeakRef<LevelCell> m_tempStoredLevelCell;
 
     // TaskScheduler m_scheduler = TaskScheduler(1); // 1 thread
-    ULILCTaskScheduler::NewTaskScheduler m_scheduler;
+    ULILCTaskScheduler::NewTaskScheduler m_scheduler = ULILCTaskScheduler::NewTaskScheduler(1);
     int m_loopTaskID = 0;
 
     // Singleton thingy :
