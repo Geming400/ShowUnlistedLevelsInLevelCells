@@ -2,9 +2,11 @@
 #include <Geode/loader/Mod.hpp>
 
 // If you use PCH these are most likely not necessary
-/*#include <Geode/binding/ButtonSprite.hpp>
+/*
+#include <Geode/binding/ButtonSprite.hpp>
 #include <Geode/binding/CCMenuItemSpriteExtra.hpp>
-#include <Geode/binding/FLAlertLayer.hpp>*/
+#include <Geode/binding/FLAlertLayer.hpp>
+*/
 
 #include "../queue/queueRequests.hpp"
 

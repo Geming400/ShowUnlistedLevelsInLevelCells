@@ -67,13 +67,6 @@
 				"input": true
 			}
 		},
-		"assume-level-type": {
-			"type": "string",
-			"default": "Unlisted",
-			"description": "Because of robtop, this mod <cb>can't really determine</cb> if the level is unlisted or friends only.\nThis setting is will tell the mod to mark the level as either Unlisted or Unlisted + Friends only.",
-			"one-of": ["Unlisted", "Unlisted + Friends only"],
-			"enable-if": "queue-requests"
-		},
 
 
 		"debug-title": {

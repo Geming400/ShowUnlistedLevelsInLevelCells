@@ -2,7 +2,8 @@
 #include "../level/levelInfos.hpp"
 #include "../queue/queueRequests.hpp"
 
-/*void levelCells::updateLevelCell(LevelCell* levelCell) {
+/*
+void levelCells::updateLevelCell(LevelCell* levelCell) {
     CCSprite* clockSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(ids::CLOCK_SPRITE_ID));
     CCSprite* unlistedSprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(ids::UNLISTED_SPRITE_ID));
     CCSprite* friendOnlySprite = typeinfo_cast<CCSprite*>(levelCell->getChildByID(ids::FRIEND_ONLY_SPRITE_ID));
@@ -23,8 +24,10 @@
         friendOnlySprite->setOpacity(0);
         friendOnlySprite->setVisible(false);
     }
-}*/
+}
+*/
 
+/*
 bool levelCells::isMaybeFriendsOnly(std::string levelResponse) {
     if (levelResponse == "-1") {
         return true;
@@ -36,12 +39,14 @@ bool levelCells::isMaybeFriendsOnly(std::string levelResponse) {
         return key35.at(0) == "0";
     }
 }
+*/
 
 void misc::log_debug(std::string s) {
     if (Mod::get()->getSettingValue<bool>("show-debug-logs") && Mod::get()->getSettingValue<bool>("enable-debug-utilities")) {
         log::debug("{}", s);
     }
 }
+
 
 std::map<std::string, std::string> misc::gdStringResponseToMap(std::string res, std::string sep){
     std::vector<std::string> splittedRes = geode::utils::string::split(res, sep);

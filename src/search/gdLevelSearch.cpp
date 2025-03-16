@@ -54,16 +54,19 @@ WeakRef<LevelCell> LevelSearch::getLevelCell(int levelID) {
     return QueueRequests::get()->getStoredTempStoredLevel();
 }
 
+// Old getGJLevels21()
+
+/*
 void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
     web::WebRequest req = web::WebRequest();
     std::string _levelID = searchObject->m_searchQuery;
     int levelID = std::stoi(_levelID); // = _levelID to int
 
-    /*matjson::Value json = matjson::Value();
-    json.set("secret", LevelSearch::COMMON_SECRET); // add the common secret
-    json.set("type", static_cast<int>(searchObject->m_searchType));
-    json.set("str", searchObject->m_searchQuery);
-    req.bodyJSON(json);*/
+    // matjson::Value json = matjson::Value();
+    // json.set("secret", LevelSearch::COMMON_SECRET); // add the common secret
+    // json.set("type", static_cast<int>(searchObject->m_searchType));
+    // json.set("str", searchObject->m_searchQuery);
+    // req.bodyJSON(json);
     // not including the GJP2 to be sure to not see unlisted + friends only levels
 
     std::string body = fmt::format("secret={}&type={}&str={}",
@@ -106,6 +109,48 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
                 }
             } else {
                 log::error("Request code is not 2xx and is {}", res->code()); // = no internet (probably) (robtop's servers dosen't return an actual status code by themselves) or the request failed (somehow :broken_hearth:)
+            }
+        } else if (e->isCancelled()) {
+            log::warn("The request was cancelled... So sad :(");
+        } else if (e->getProgress()) {
+            return;
+        }
+
+        hideClockIcon(levelID);
+    });
+
+    m_listener.setFilter(req.post(URL));
+}
+    */
+
+
+void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
+    web::WebRequest req = web::WebRequest();
+    std::string const string_levelID = searchObject->m_searchQuery;
+    int const levelID = std::stoi(string_levelID); // = string_levelID to int
+
+    std::string body = fmt::format("secret={}&type={}&str={}",
+        COMMON_SECRET,
+        static_cast<int>(searchObject->m_searchType),
+        searchObject->m_searchQuery);
+
+    std::string const newUrl = fmt::format("{}/{}", URL, string_levelID);
+
+    req.timeout(std::chrono::seconds(5)); // set the timeout to 5 seconds
+    
+    LevelCell* levelCell = getLevelCell(levelID).lock();
+
+    m_listener.bind([this, levelCell, levelID] (web::WebTask::Event* e) {
+        if (web::WebResponse* res = e->getValue()) {
+            std::string resString = res->string().unwrapOr("-1");
+
+            if (resString == "-1") {
+                misc::log_debug("[LevelSearch::getGJLevels21] Will save level infos");
+                if (levelCell) {
+                    LevelInfos::saveCustomLevelInfos(levelCell, true, true); // This allows us to show the friends / unlisted icon
+                } else {
+                    LevelInfos::saveCustomLevelInfos(levelID, true, true);
+                }
             }
         } else if (e->isCancelled()) {
             log::warn("The request was cancelled... So sad :(");

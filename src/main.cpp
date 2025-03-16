@@ -66,7 +66,8 @@ class $modify(MyLevelCell, LevelCell) {
 		}
 		return true;
 		
-		/*log::debug("hello 0.1");
+		/*
+		log::debug("hello 0.1");
 		//LevelBrowserLayer* levelBrowserLayer = typeinfo_cast<LevelBrowserLayer*>(this->getParent()
 		//->getParent()
 		//->getParent()
@@ -94,7 +95,8 @@ class $modify(MyLevelCell, LevelCell) {
 		} else {
 			log::info("not if (levelBrowserLayer)");
 		}
-		return false;*/
+		return false;
+		*/
 	}
 
 

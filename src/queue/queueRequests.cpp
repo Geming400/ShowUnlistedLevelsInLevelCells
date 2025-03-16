@@ -7,7 +7,7 @@ QueueRequests* QueueRequests::instance = nullptr;
 
 /*
 What is the use of the temp queue ?
-Uhhh idk here's a pseudo thing:
+Uhhh idk here's a pseudo code thing:
 
 LevelCell::loadCustomLevel(GJGameLevel* level) {
   // show sprites
