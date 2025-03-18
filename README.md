@@ -1,4 +1,4 @@
-# ShowUnlistedLevelsInLevelCells
+# Unlisted levels in saves
 
 This is where she makes a mod.
 
@@ -40,8 +40,5 @@ If you have any issue understanding what I did, be sure to dm on discord (linked
 ## TODO
 
 - ~~Use `m_tempQueuedLevelList`~~
-- Use `CCArray`s when possible instead of `std::vector`s.
 - Make a mod icon
-- Maybe fix android build issues
-- Make that requests are qued based on their ids or something
 - Fix the previews' images inconcistency
