@@ -80,7 +80,7 @@ void QueueRequests::startLoop() {
 
     auto loopInterval = Mod::get()->getSettingValue<double>("queue-requests-timing");
     auto recurringTask = new ULILCTaskScheduler::Task(
-        [this]() { // add 'this' in the capture list
+        [this]() {
             if (Mod::get()->getSettingValue<bool>("queue-requests") && Mod::get()->getSettingValue<bool>("let-queue-start")) { // also putting this in case the user turn off this feature while the loop is running
                 // log::debug("isQueuedLevelsSuperiorToN() = {}", std::to_string(isQueuedLevelsSuperiorToN(0, false)));
                 misc::log_debug(fmt::format("queuedLevelList.size() = {}", std::to_string(getQueue().size())));
@@ -105,7 +105,7 @@ void QueueRequests::startLoop() {
                     GJSearchObject* searchObject = GJSearchObject::create(SearchType::Search, std::to_string(levelID));
                     levelSearch->getGJLevels21(searchObject); // search for the level id
 
-                    m_queuedLevelList.erase(levelID); // remove the first element in the vector
+                    m_queuedLevelList.erase(levelID);
                     if (!m_queuedLevelList.contains(levelID)) {
                         if (levelCell) {
                             log::info("Removed {} from queue", level->m_levelName);
