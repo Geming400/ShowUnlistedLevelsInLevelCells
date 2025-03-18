@@ -56,9 +56,6 @@ class $modify(MyLevelCell, LevelCell) {
 		return levelCells::allowedTypes.contains(searchType);
 	}
 
-	/*
-	This will get the search type from a GJSearchObject from the fifth parent (yes I could have hooked LevelBrowserLayer but whatever)
-	*/
 	bool isSearchTypeAllowed() const {
 		if (LevelInfos::isLevelDaily(m_level)) {
 			log::info("Search type for daily levels is not allowed");
@@ -213,9 +210,9 @@ class $modify(MyMenuLayer, MenuLayer) {
 		{
 			GJGameLevel* level = typeinfo_cast<GJGameLevel*>(localLevels->objectAtIndex(i)); // cast the CCObject* into a GJGameLevel*
 
-			if (level->m_unlisted || level->m_friendsOnly) { // if the level is either unlisted or friend only
+			if (level->m_unlisted || level->m_friendsOnly) {
 				log::debug("Level {} will have it's info saved", level->m_levelName);
-				LevelInfos::saveLevelInfos(level); // save it's info the (unlisted || friendsOnly) is already in LevelInfos::saveLevelInfos()
+				LevelInfos::saveLevelInfos(level);
 			}
 			
 			LevelInfos::addQueuedLevel(level); // prevent the level from being queued
