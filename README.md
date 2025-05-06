@@ -35,10 +35,8 @@ When the level is in queue a clock icon will show up (it's disabled by default i
 ## Contributing
 
 I'm not the best at c++ so sorry for that :(
-If you have any issue understanding what I did, be sure to dm on discord (linked on my github socials) or make an issue.
 
 ## TODO
 
 - ~~Use `m_tempQueuedLevelList`~~
 - Make a mod icon
-- Fix the previews' images inconcistency
