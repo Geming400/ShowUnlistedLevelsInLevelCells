@@ -29,7 +29,7 @@ If instead I was only relying on the queue, if the level was queued but while th
 at the end of day, because the request didn't finish
 */
 
-#define GEODE_LEVEL_FROM_WEAKREF(weakRef) weakRef.lock()->m_level
+#define LEVEL_FROM_WEAKREF(weakRef) weakRef.lock()->m_level
 
 QueueRequests* QueueRequests::get() {
     static QueueRequests instance;
@@ -58,11 +58,11 @@ void QueueRequests::removeLevelFromQueue(LevelCell* levelCell) {
 }
 
 bool QueueRequests::isQueuedInTempQueue(GJGameLevel* level) {
-    return GEODE_LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID == level->m_levelID;
+    return LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID == level->m_levelID;
 }
 
 bool QueueRequests::isQueuedInTempQueue(LevelCell* levelCell) {
-    return GEODE_LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID == levelCell->m_level->m_levelID;
+    return LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID == levelCell->m_level->m_levelID;
 }
 
 bool QueueRequests::isQueued(GJGameLevel* level) {
@@ -166,9 +166,9 @@ std::vector<WeakRef<LevelCell>> QueueRequests::getQueue() {
     return misc::getValuesFromMap<int, WeakRef<LevelCell>>(m_queuedLevelList);
 }
 
-void print_map(std::map<int, WeakRef<LevelCell>> const &map) {
+void print_map(const std::map<int, WeakRef<LevelCell>> &map) {
     log::info("------------");
-    for (auto const &[levelID, levelCell]: map) {
+    for (const auto &[levelID, levelCell]: map) {
         if (levelCell.valid()) {
             log::info("({}: VALID LEVEL CELL)", std::to_string(levelID));
         } else {
@@ -188,7 +188,7 @@ WeakRef<LevelCell> QueueRequests::getLevelCellFromLevelID(int levelID) {
 WeakRef<LevelCell> QueueRequests::getStoredTempStoredLevel() {
     log::info("------------"); // emulate (print_map())
     if (m_tempStoredLevelCell.valid()) {
-        log::info("({}: VALID LEVEL CELL)", std::to_string(GEODE_LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID));
+        log::info("({}: VALID LEVEL CELL)", std::to_string(LEVEL_FROM_WEAKREF(m_tempStoredLevelCell)->m_levelID));
     } else {
         log::info("(???: NOT A VALID LEVEL CELL)");
     }

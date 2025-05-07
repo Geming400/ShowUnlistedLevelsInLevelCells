@@ -57,14 +57,14 @@ namespace ULILCTaskScheduler { // ULILC = Unlisted Levels In Level Cells
 
         void addTask(Task task);
         void addTask(Task* task);
-        void removeTask(unsigned int const taskID);
+        void removeTask(unsigned const int taskID);
 
         void runAllTasks();
         void stopAllTasks();
 
-        Task* getTask(unsigned int const taskID);
+        Task* getTask(unsigned const int taskID);
 
-        Task* operator[](size_t const id);
+        Task* operator[](const size_t id);
     private:
         size_t m_maxTaskCount;
         

@@ -16,9 +16,9 @@ namespace fades {
 }
 
 namespace ids {
-    std::string const CLOCK_SPRITE_ID = "clock-sprite"_spr;
-    std::string const UNLISTED_SPRITE_ID = "unlisted-icon.png"_spr;
-    std::string const FRIEND_ONLY_SPRITE_ID = "friend-only-icon.png"_spr;
+    const std::string CLOCK_SPRITE_ID = "clock-sprite"_spr;
+    const std::string UNLISTED_SPRITE_ID = "unlisted-icon.png"_spr;
+    const std::string FRIEND_ONLY_SPRITE_ID = "friend-only-icon.png"_spr;
 }
 
 namespace levelCells {
@@ -28,10 +28,10 @@ namespace levelCells {
 
     // For main.cpp :
 
-    CCPoint const firstPos = {340, 10}; // the first pos, aka it's on the left side
-    CCPoint const secondPos = {325, 10}; // the second pos, aka it's on the left side but a little bit less
+    const CCPoint firstPos = {340, 10}; // the first pos, aka it's on the left side
+    const CCPoint secondPos = {325, 10}; // the second pos, aka it's on the left side but a little bit less
 
-    std::unordered_set<SearchType> const allowedTypes = { // TODO: Try implemeting that in the future
+    const std::unordered_set<SearchType> allowedTypes = { // TODO: Try implemeting that in the future
         SearchType::Downloaded,
         SearchType::FavouriteLevels,
         SearchType::MyLevels,

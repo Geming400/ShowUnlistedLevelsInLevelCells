@@ -130,15 +130,15 @@ void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
 
 void LevelSearch::getGJLevels21(GJSearchObject* searchObject) {
     web::WebRequest req = web::WebRequest();
-    std::string const string_levelID = searchObject->m_searchQuery;
-    int const levelID = std::stoi(string_levelID); // = string_levelID to int
+    const std::string string_levelID = searchObject->m_searchQuery;
+    const int levelID = std::stoi(string_levelID); // = string_levelID to int
 
     std::string body = fmt::format("secret={}&type={}&str={}",
         COMMON_SECRET,
         static_cast<int>(searchObject->m_searchType),
         searchObject->m_searchQuery);
 
-    std::string const newUrl = fmt::format("{}/{}", URL, string_levelID);
+        const std::string newUrl = fmt::format("{}/{}", URL, string_levelID);
 
     req.timeout(std::chrono::seconds(5)); // set the timeout to 5 seconds
     

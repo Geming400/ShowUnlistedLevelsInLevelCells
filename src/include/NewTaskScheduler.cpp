@@ -77,7 +77,7 @@ void NewTaskScheduler::addTask(Task* task) {
     }
 }
 
-void NewTaskScheduler::removeTask(unsigned int const taskID) {
+void NewTaskScheduler::removeTask(unsigned const int taskID) {
     Task* task = m_tasks[m_tasksIndexexToID[taskID]];
     task->stop();
 
@@ -88,7 +88,7 @@ void NewTaskScheduler::removeTask(unsigned int const taskID) {
     m_tasksIndexexToID.erase(taskID);
 }
 
-Task* NewTaskScheduler::getTask(unsigned int const taskID) {
+Task* NewTaskScheduler::getTask(unsigned const int taskID) {
     for (auto task : m_tasks)
     {
         if (task->getID() == taskID) {
@@ -112,6 +112,6 @@ void NewTaskScheduler::stopAllTasks() {
     }
 }
 
-Task* NewTaskScheduler::operator[](size_t const id) {
+Task* NewTaskScheduler::operator[](const size_t id) {
     return m_tasks[m_tasksIndexexToID[id]];
 }
