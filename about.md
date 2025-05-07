@@ -6,7 +6,7 @@ You can read the [readme.md](https://github.com/Geming400/ShowUnlistedLevelsInLe
 
 ## Credit
 
-- Thank to [Alphalaneous](https://geode-sdk.org/mods?developer=alphalaneous) for making the mod icon !
+- Thank to [Flingus](https://github.com/flngus/) for making the mod icon :3
 - Thank to [zidnes](https://x.com/xviaexclusive) for making the eye icon !
 - Big big thank to [#dev-help](https://discord.com/channels/911701438269386882/979402752121765898) for helping me fix my dumb mistakes
 - And last, also thank to robtop for making the friend icon
