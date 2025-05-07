@@ -3,4 +3,3 @@
 - Initial release
 - Added request queuing
 - Added dev utilities
-- Added
