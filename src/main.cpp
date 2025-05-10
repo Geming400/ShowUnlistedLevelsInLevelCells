@@ -18,7 +18,12 @@ AND
 if the level is a daily / weekly / event  level
 */
 bool wasQueued(GJGameLevel* level) {
-	return (LevelInfos::wasAlreadyQueued(level) && QueueRequests::get()->isQueued(level) && QueueRequests::get()->isQueuedInTempQueue(level) && LevelInfos::isLevelDaily(level));
+	bool wasAlreadyQueued = LevelInfos::wasAlreadyQueued(level);
+	bool isCurrentlyInQueue = QueueRequests::get()->isQueued(level);
+	bool isCurrentlyInTempQueue = QueueRequests::get()->isQueuedInTempQueue(level);
+	bool isDailyLevel = LevelInfos::isLevelDaily(level);
+
+	return (wasAlreadyQueued && isCurrentlyInQueue && isCurrentlyInTempQueue && isDailyLevel);
 }
 
 #include <Geode/modify/EditLevelLayer.hpp>
@@ -162,19 +167,16 @@ class $modify(MyLevelCell, LevelCell) {
 
 		addChild(m_fields->m_clockSprite);
 
-		// Adding the level in queue or something
+		// Adding the level in queue or something and showing the clock sprite
 
-		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly) && !wasQueued(m_level)) {
+		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly) && !wasQueued(m_level) && !LevelInfos::isLevelRated(m_level)) {
 			misc::log_debug(fmt::format("Adding {} to queue from main.cpp", m_level->m_levelName));
-			QueueRequests::get()->addLevelToQueue(this);
-		}
 
-		// showing the clock sprite
-
-		if (!(m_fields->m_isUnlisted && m_fields->m_isFriendOnly) && !wasQueued(m_level)) {
 			if (Mod::get()->getSettingValue<bool>("show-clock-icon") && Mod::get()->getSettingValue<bool>("queue-requests") && QueueRequests::get()->isQueued(m_level)) {
 				m_fields->m_clockSprite->setVisible(true);
 			}
+
+			QueueRequests::get()->addLevelToQueue(this);
 		}
     }
 };
