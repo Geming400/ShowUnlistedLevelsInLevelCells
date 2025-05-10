@@ -8,7 +8,7 @@
 	},
 	"id": "geming400.unlistedlevelsinsaved",
 	"name": "Unlisted levels in saved",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"developer": "Geming400",
 	"description": "Will show if a level is unlisted / friends only",
 	"tags": ["online", "offline"],

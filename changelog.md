@@ -1,3 +1,7 @@
+# 1.0.1
+
+- Added rate check
+
 # 1.0.0
 
 - Initial release
