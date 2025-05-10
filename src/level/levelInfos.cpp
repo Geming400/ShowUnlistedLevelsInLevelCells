@@ -270,5 +270,9 @@ void LevelInfos::saveInfosOfLevelsInArray(CCArray* levels) { // fun fact: this c
 
 
 bool LevelInfos::isLevelDaily(GJGameLevel* level) {
-	return (level->m_dailyID.value() != 0);
+	return level->m_dailyID.value() != 0;
+}
+
+bool LevelInfos::isLevelRated(GJGameLevel* level) {
+	return level->m_rateStars != 0;
 }

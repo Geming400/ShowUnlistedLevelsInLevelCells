@@ -53,4 +53,5 @@ public:
 	// other stuff
 
 	static bool isLevelDaily(GJGameLevel* level);
+	static bool isLevelRated(GJGameLevel* level);
 };
